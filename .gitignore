@@ -1,0 +1,4 @@
+/secrets/*
+/vendor
+.DS_Store
+.env.local
