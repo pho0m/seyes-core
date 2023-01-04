@@ -1,4 +1,4 @@
-# MNS-core (web server core)
+# seyes-core (web server core)
 
 ### Development
 
