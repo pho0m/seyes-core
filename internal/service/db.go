@@ -22,6 +22,5 @@ func NewDB() (*gorm.DB, error) {
 
 // databaseDSN dsn value
 func databaseDSN() string {
-
 	return os.Getenv("DB_DSN")
 }

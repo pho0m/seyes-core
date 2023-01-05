@@ -5,11 +5,11 @@ import (
 
 	"gorm.io/gorm"
 
-	modelShop "mns-core/internal/model/shop"
+	modelUser "seyes-core/internal/model/user"
 )
 
 var tableSets = []interface{}{
-	modelShop.Shop{},
+	modelUser.User{},
 }
 
 // Container defines a service container
@@ -45,6 +45,5 @@ func DoMigration(db *gorm.DB) error {
 	// 	sentry.CaptureException(err)
 	// 	panic("cannot initialize Super admin: " + err.Error())
 	// }
-
 	return nil
 }

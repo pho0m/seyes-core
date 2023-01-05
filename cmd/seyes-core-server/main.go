@@ -3,14 +3,17 @@ package main
 import (
 	"errors"
 	"fmt"
-	"mns-core/internal/service"
-	"mns-core/internal/web"
 	"os"
+	"seyes-core/internal/service"
+	"seyes-core/internal/web"
 
 	"time"
 )
 
 func main() {
+	if err := loadEnv(); err != nil {
+		panic(err)
+	}
 
 	sc, err := service.NewContainer()
 

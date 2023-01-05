@@ -1,11 +1,11 @@
 package model
 
 import (
-	m "mns-core/internal/model"
+	m "seyes-core/internal/model"
 )
 
-// Shop defines the shop details
-type Shop struct {
+// User defines the user model details
+type User struct {
 	m.Model
 	Name   string `json:"name"`
 	Prefix string `json:"prefix"`

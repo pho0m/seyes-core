@@ -10,7 +10,6 @@ RUN \
 
 RUN zip -q -r -0 /zoneinfo.zip /usr/share/zoneinfo
 
-
 # Build pahse
 FROM base as builder
 
@@ -21,9 +20,9 @@ RUN go mod download
 
 COPY . /app
 
-RUN CGO_ENABLED=0 go build -o bin/mns-core-server -a -tags netgo -ldflags '-extldflags "-static"' cmd/mns-core-server/main.go
+RUN CGO_ENABLED=0 go build -o bin/seyes-core-server -a -tags netgo -ldflags '-extldflags "-static"' cmd/seyes-core-server/main.go
 
-RUN cp bin/mns-core-server /go/bin/mns-core-server
+RUN cp bin/seyes-core-server /go/bin/seyes-core-server
 
 FROM scratch
 WORKDIR /app
@@ -32,7 +31,7 @@ ENV ZONEINFO /zoneinfo.zip
 COPY --from=base /usr/share/zoneinfo /usr/share/zoneinfo
 COPY --from=base /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
-COPY --from=builder /go/bin/mns-core-server /mns-core-server
+COPY --from=builder /go/bin/seyes-core-server /seyes-core-server
 
 EXPOSE 3000
-CMD ["/mns-core-server"]
+CMD ["/seyes-core-server"]

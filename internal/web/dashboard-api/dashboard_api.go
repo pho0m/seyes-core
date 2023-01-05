@@ -1,7 +1,7 @@
 package dashboardAPI
 
 import (
-	"mns-core/internal/service"
+	"seyes-core/internal/service"
 
 	"github.com/go-chi/chi"
 )
@@ -10,7 +10,6 @@ import (
 func SetupRoutes(sc *service.Container, r chi.Router) {
 
 	// a := auth.NewApiMiddleware(sc)
-
 	// // Auth Sections
 	// r.Route("/login", func(r chi.Router) {
 	// 	c := NewAuthController(sc)

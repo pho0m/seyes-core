@@ -1,9 +1,9 @@
 package dashboardAPI
 
 import (
-	"mns-core/internal/service"
-	"mns-core/internal/web/common"
 	"net/http"
+	"seyes-core/internal/service"
+	"seyes-core/internal/web/common"
 
 	"gorm.io/gorm"
 )
@@ -24,6 +24,7 @@ func NewShopsController(sc *service.Container) *ShopController {
 		// auth: sc.Auth.(*auth.Authenticator),
 	}
 }
+
 
 // NewShop endpoint for create shop
 func (c *ShopController) NewShop(w http.ResponseWriter, r *http.Request) {

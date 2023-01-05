@@ -12,3 +12,4 @@ type Model struct {
 	UpdatedAt time.Time  `json:"-"`
 	CreatedAt time.Time  `json:"-"`
 }
+

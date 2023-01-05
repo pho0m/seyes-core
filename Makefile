@@ -16,4 +16,4 @@ down:
 
 .PHONY:
 psql:
-	docker-compose exec db psql -U mns_local
+	docker-compose exec db psql -U seyes-core

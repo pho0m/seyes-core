@@ -2,15 +2,15 @@ package web
 
 import (
 	"fmt"
-	"mns-core/internal/service"
 	"net/http"
+	"seyes-core/internal/service"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/cors"
 
-	"mns-core/internal/web/common"
-	dashboardAPI "mns-core/internal/web/dashboard-api"
+	"seyes-core/internal/web/common"
+	dashboardAPI "seyes-core/internal/web/dashboard-api"
 )
 
 // Server defines a Web Server
@@ -53,7 +53,6 @@ func NewServer(sc *service.Container, port string) *Server {
 
 // 	return cred
 // }
-
 // RegisterHandler add handler to router
 func (s *Server) RegisterHandler(h common.Handler) {
 	h.Register(s.Router)

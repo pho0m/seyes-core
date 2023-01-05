@@ -110,3 +110,4 @@ func (h *BaseRender) Error(w http.ResponseWriter, err interface{}, msg string, s
 		log.Println("Cannot write a response:", err.Error())
 	}
 }
+
