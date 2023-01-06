@@ -25,11 +25,11 @@ func SetupRoutes(sc *service.Container, r chi.Router) {
 	// 	r.Post("/session", c.CreateSession)
 	// })
 
-	// Shops Sections
-	r.Route("/shops", func(r chi.Router) {
-		c := NewShopsController(sc)
+	// dashboard controller Sections
+	r.Route("/api", func(r chi.Router) {
+		c := NewDashboardController(sc)
 		// r.Use(a.MiddlewareAnalytic)
-		r.Get("/", c.NewShop)
+		r.Post("/notify", c.Notify)
 	})
 
 }
