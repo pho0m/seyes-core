@@ -2,7 +2,7 @@ package dashboardAPI
 
 import (
 	"net/http"
-	rd "seyes-core/internal/core"
+	rd "seyes-core/internal/core/notifications"
 	"seyes-core/internal/helper"
 	"seyes-core/internal/service"
 	"seyes-core/internal/web/common"
@@ -52,26 +52,12 @@ func (c *DashboardController) Notify(w http.ResponseWriter, r *http.Request) {
 		Time:     ps.Time,
 	}
 
-	err = rd.SendToLineNotify(&data)
+	res, err := rd.SendToLineNotify(&data)
 
 	if err != nil {
 		c.Error(w, err, "send to error", http.StatusInternalServerError)
 		return
 	}
 
-	c.JSON(w, "notify !")
+	c.JSON(w, res)
 }
-
-// var ps rc.ShopParams
-// err := json.NewDecoder(r.Body).Decode(&ps)
-
-// if err != nil {
-// 	c.Error(w, err, "decode param error", http.StatusBadRequest)
-// 	return
-// }
-// br, err := rc.CreateShop(c.db, &ps)
-
-// if err != nil {
-// 	c.Error(w, err, "create error", http.StatusInternalServerError)
-// 	return
-// }

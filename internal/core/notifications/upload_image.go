@@ -6,35 +6,16 @@ import (
 	"io"
 	"mime/multipart"
 	"net/http"
-	"os"
 	"path"
 	"seyes-core/internal/helper"
-	"strconv"
 	"strings"
 
 	"github.com/gofrs/uuid"
 )
 
-const urlNotify = "https://notify-api.line.me/api/notify"
-
-// NotifyParam define data to Notify template
-type NotifyParam struct {
-	ID       int64          `json:"id"`
-	Person   int64          `json:"person"`
-	ComOn    int64          `json:"com_on"`
-	UploadAt string         `json:"upload_at"`
-	Time     string         `json:"time"`
-	Photo    multipart.File `json:"photo"`
-}
-
-type SendDataToNotify struct {
-	ImageFile multipart.File `json:"imageFile"`
-	Message   string         `json:"message"`
-}
-
 //APIS UPLOAD PHOTO V2
-// PhotoFileParamsV2 defines File for Upload Photo
-type PhotoFileParamsV2 struct {
+// PhotoFileParams defines File for Upload Photo
+type PhotoFileParams struct {
 	Bucket     string
 	PublicRead bool
 	MediaType  string
@@ -75,48 +56,6 @@ func UploadPhoto(ps *helper.UploadFileParams) (*Media, error) {
 	}
 
 	return m, nil
-}
-
-func SendToLineNotify(ps *NotifyParam) error {
-	// id := strconv.Itoa(int(ps.ID))
-	person := strconv.Itoa(int(ps.Person))
-	comOn := strconv.Itoa(int(ps.ComOn))
-
-	accessToken := "Bearer " + os.Getenv("NOTIFY_TOKEN")
-	message := "Detection !" + "\n" +
-		"Person : " + person + "\n" +
-		"Com On : " + comOn + "\n" +
-		"Upload at : " + ps.UploadAt + "\n" +
-		"Time : " + ps.Time
-
-	body, contentType, err := makeMultipartBody(message, ps.Photo)
-
-	if err != nil {
-		return err
-	}
-	buf := new(bytes.Buffer)
-	buf.ReadFrom(&body)
-
-	req, err := http.NewRequest("POST", urlNotify, buf)
-
-	if err != nil {
-		return err
-	}
-	client := &http.Client{}
-	req.Header.Add("Content-Type", contentType)
-	req.Header.Add("authorization", accessToken)
-	response, err := client.Do(req)
-
-	if response.StatusCode == 400 {
-		return err
-	}
-
-	if err != nil {
-		return err
-	}
-	defer response.Body.Close()
-
-	return nil
 }
 
 func makeMultipartBody(message string, image multipart.File) (body bytes.Buffer, contentType string, err error) {
