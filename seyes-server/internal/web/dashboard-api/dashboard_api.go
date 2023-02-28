@@ -29,7 +29,11 @@ func SetupRoutes(sc *service.Container, r chi.Router) {
 	r.Route("/api", func(r chi.Router) {
 		c := NewDashboardController(sc)
 		// r.Use(a.MiddlewareAnalytic)
+
+		r.Get("/", c.HealthCheck)
 		r.Post("/notify", c.Notify)
+
+		r.Get("/models/default", c.ReadModelFile)
 	})
 
 }

@@ -1,12 +1,4 @@
 .PHONY:
-test:
-	go test ./...
-
-.PHONY:
-build:
-	echo "Should be building something"
-
-.PHONY:
 dev:
 	docker-compose up
 

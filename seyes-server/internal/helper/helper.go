@@ -24,11 +24,12 @@ const (
 
 // QueryUploadParams define data to query upload params template
 type QueryUploadParams struct {
-	ID       int64  `json:"id"`
-	Person   int64  `json:"person"`
-	ComOn    int64  `json:"com_on"`
-	UploadAt string `json:"upload_at"`
-	Time     string `json:"time"`
+	ID        int64  `json:"id"`
+	Person    int64  `json:"person"`
+	ComOn     int64  `json:"com_on"`
+	UploadAt  string `json:"upload_at"`
+	Time      string `json:"time"`
+	Accurency string `json:"accurency"`
 }
 
 // UploadFileParams defines parameters fro UploadFile
@@ -57,6 +58,7 @@ func ParsingQueryUpload(query interface{}) *QueryUploadParams {
 		conOn     = 0
 		upload_at = ""
 		time      = ""
+		accurency = ""
 	)
 
 	switch v := query.(type) {
@@ -69,17 +71,19 @@ func ParsingQueryUpload(query interface{}) *QueryUploadParams {
 
 		upload_at = v.Get("upload_at")
 		time = v.Get("time")
+		accurency = v.Get("accurency")
 
 		i := v.Get("id")
 		ID, _ = strconv.Atoi(i)
 	}
 
 	return &QueryUploadParams{
-		ID:       int64(ID),
-		Person:   int64(person),
-		ComOn:    int64(conOn),
-		UploadAt: upload_at,
-		Time:     time,
+		ID:        int64(ID),
+		Person:    int64(person),
+		ComOn:     int64(conOn),
+		UploadAt:  upload_at,
+		Time:      time,
+		Accurency: accurency,
 	}
 }
 

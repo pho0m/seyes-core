@@ -12,12 +12,13 @@ const urlNotify = "https://notify-api.line.me/api/notify"
 
 // NotifyParam define data to Notify template
 type NotifyParam struct {
-	ID       int64          `json:"id"`
-	Person   int64          `json:"person"`
-	ComOn    int64          `json:"com_on"`
-	UploadAt string         `json:"upload_at"`
-	Time     string         `json:"time"`
-	Photo    multipart.File `json:"photo"`
+	ID        int64          `json:"id"`
+	Person    int64          `json:"person"`
+	ComOn     int64          `json:"com_on"`
+	UploadAt  string         `json:"upload_at"`
+	Time      string         `json:"time"`
+	Photo     multipart.File `json:"photo"`
+	Accurency string         `json:"accurency"`
 }
 
 type SendDataToNotify struct {
@@ -39,7 +40,8 @@ func SendToLineNotify(ps *NotifyParam) (*ResponseNotify, error) {
 		"Person : " + person + "\n" +
 		"Com On : " + comOn + "\n" +
 		"Upload at : " + ps.UploadAt + "\n" +
-		"Time : " + ps.Time
+		"Time : " + ps.Time + "\n" +
+		"Accurency : " + ps.Accurency + "%"
 
 	body, contentType, err := makeMultipartBody(message, ps.Photo)
 
