@@ -1,4 +1,13 @@
-# seyes-core-project (web server core)
+# seyes-core (web server core)
 
-- RTSPtoWeb
-- seyes-server
+### Development
+
+for develop use this command
+
+```
+# make dev
+for start server
+
+# make down
+for down container server (down db)
+```
