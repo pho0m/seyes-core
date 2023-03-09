@@ -53,6 +53,7 @@ func NewServer(sc *service.Container, port string) *Server {
 
 // 	return cred
 // }
+
 // RegisterHandler add handler to router
 func (s *Server) RegisterHandler(h common.Handler) {
 	h.Register(s.Router)

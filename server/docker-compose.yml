@@ -1,6 +1,7 @@
 version: "3.4"
 services:
-  app:
+  seyes_core:
+    container_name: seyes_core
     build:
       context: .
       target: base

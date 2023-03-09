@@ -1,13 +1,32 @@
-# seyes-core (web server core)
+# Seyes Core Project
 
-### Development
+Smart classroom project for computer education as follows
 
-for develop use this command
+- Core web sever
+- Camera config management
+- Fushionauth
+- Database
 
-```
-# make dev
-for start server
+> ## seyes camera management
 
-# make down
-for down container server (down db)
-```
+---
+
+work in progress
+
+> ## Camera config management
+
+---
+
+work in progress
+
+> ## Fushionauth
+
+---
+
+work in progress
+
+> ## Database
+
+---
+
+work in progress

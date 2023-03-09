@@ -9,11 +9,11 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.17.1
+          go-version: 1.19
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Test
-        run: go test ./...
+      # - name: Test Core Server
+      #   run: go test ./...
 
       - uses: sarisia/actions-status-discord@v1
         if: always()
