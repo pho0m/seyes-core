@@ -7,10 +7,9 @@ import (
 // User defines the user model details
 type User struct {
 	m.Model
-	Name     string `json:"name"`
-	Prefix   string `json:"prefix"`
-	Password string `json:"password"`
-	Phone    string `json:"phone" `
-	Email    string `json:"email" gorm:"uniqueIndex:idx_user"`
-	Pincode  string `json:"pincode"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+	Tel       string `json:"tel"`
+	Password  string `json:"password"` //FIXME
+	Email     string `json:"email" gorm:"uniqueIndex:idx_user"`
 }

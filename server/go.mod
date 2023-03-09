@@ -11,6 +11,8 @@ require (
 	gorm.io/gorm v1.20.8
 )
 
+require github.com/davecgh/go-spew v1.1.1
+
 require (
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
 	github.com/jackc/pgconn v1.8.0 // indirect

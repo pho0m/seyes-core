@@ -34,6 +34,17 @@ func SetupRoutes(sc *service.Container, r chi.Router) {
 		r.Post("/notify", c.Notify)
 
 		r.Get("/models/default", c.ReadModelFile)
+
+		r.Route("/rooms", func(r chi.Router) {
+			room := NewRoomController(sc)
+
+			r.Get("/", room.IndexRoomHandler)
+			r.Get("/{id}", room.GetRoomHandler)
+			r.Post("/new", room.CreateRoomHandler)
+			r.Put("/edit/{id}", room.UpdateRoomHandler)
+			r.Delete("/delete/{id}", room.DeleteRoomHandler)
+		})
+
 	})
 
 }
