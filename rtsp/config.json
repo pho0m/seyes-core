@@ -20,16 +20,15 @@
       "backend": "http://127.0.0.1/test.php"
     },
     "defaults": {
-      "audio": true
+      "audio": false
     }
   },
   "streams": {
     "27aec28e-6181-4753-9acd-0456a75f0289": {
       "channels": {
         "0": {
-          "url": "rtmp://171.25.232.10/12d525bc9f014e209c1280bc0d46a87e",
-          "debug": false,
-          "audio": true
+          "url": "rtsp://admin123:admin123@192.168.0.8:554/stream1",
+          "debug": false
         }
       },
       "name": "111111111"
