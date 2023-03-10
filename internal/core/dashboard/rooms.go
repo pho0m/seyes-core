@@ -25,7 +25,7 @@ type RoomParams struct {
 	Label  string `json:"label"`
 	CamURL string `json:"cam_url"`
 	Status string `json:"status"`
-	Active string `json:"active"`
+	Active bool   `json:"active"`
 }
 
 // GetAllRoom get all room product
