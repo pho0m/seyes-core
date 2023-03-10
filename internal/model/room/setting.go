@@ -8,7 +8,7 @@ import (
 type Setting struct {
 	m.Model
 
-	ModelData             string `json:"model_data"`
+	AiModelData           string `json:"model_data"`
 	CronjobTime           string `json:"cronjob_time"`
 	LineNotifyAccessToken string `json:"notify_access_token"`
 }

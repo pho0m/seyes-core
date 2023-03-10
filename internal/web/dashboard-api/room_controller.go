@@ -8,7 +8,6 @@ import (
 	"seyes-core/internal/service"
 	"seyes-core/internal/web/common"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/go-chi/chi"
 	"gorm.io/gorm"
 )
@@ -54,8 +53,6 @@ func (h *RoomController) IndexRoomHandler(w http.ResponseWriter, r *http.Request
 // GetRoomHandler endpoint for get a room
 func (h *RoomController) GetRoomHandler(w http.ResponseWriter, r *http.Request) {
 	ps := helper.ParsingQueryString(chi.URLParam(r, "id"))
-
-	spew.Dump(ps)
 
 	res, err := core.GetRoom(h.db, &helper.UrlParams{
 		ID: ps.ID,

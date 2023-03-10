@@ -5,6 +5,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"os"
+	"seyes-core/internal/helper"
 	"strconv"
 )
 
@@ -43,7 +44,7 @@ func SendToLineNotify(ps *NotifyParam) (*ResponseNotify, error) {
 		"Time : " + ps.Time + "\n" +
 		"Accurency : " + ps.Accurency + "%"
 
-	body, contentType, err := makeMultipartBody(message, ps.Photo)
+	body, contentType, err := helper.MakeMultipartBody(message, ps.Photo)
 
 	if err != nil {
 		return nil, err

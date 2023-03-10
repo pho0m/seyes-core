@@ -45,6 +45,13 @@ func SetupRoutes(sc *service.Container, r chi.Router) {
 			r.Delete("/delete/{id}", room.DeleteRoomHandler)
 		})
 
+		r.Route("/settings", func(r chi.Router) {
+			room := NewSettingsController(sc)
+
+			r.Get("/", room.GetSettingsHandler)
+			r.Put("/edit/{id}", room.UpdateSettingsHandler)
+		})
+
 	})
 
 }

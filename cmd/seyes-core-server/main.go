@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	core "seyes-core/internal/core/dashboard"
 	"seyes-core/internal/service"
 	"seyes-core/internal/web"
 
@@ -31,7 +32,15 @@ func main() {
 		panic("cannot initialize Database: " + err.Error())
 	}
 
-	fmt.Println("Starting HTTP server...")
+	if _, err := core.CreateSettings(sc.DB, &core.SettingsParams{
+		AiModelData:           "test",
+		CronjobTime:           "test",
+		LineNotifyAccessToken: "test",
+	}); err != nil {
+		panic(err)
+	}
+
+	fmt.Println("Starting seyes http server...")
 	s.Start(sc)
 }
 
