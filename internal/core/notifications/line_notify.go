@@ -36,7 +36,7 @@ func SendToLineNotify(ps *NotifyParam) (*ResponseNotify, error) {
 	person := strconv.Itoa(int(ps.Person))
 	comOn := strconv.Itoa(int(ps.ComOn))
 
-	accessToken := "Bearer " + os.Getenv("NOTIFY_TOKEN")
+	accessToken := "Bearer " + os.Getenv("NOTIFY_TOKEN") //FIXME GET FROM SETTING
 	message := "Detection !" + "\n" +
 		"Person : " + person + "\n" +
 		"Com On : " + comOn + "\n" +

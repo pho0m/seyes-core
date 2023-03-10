@@ -8,7 +8,7 @@ down:
 
 .PHONY:
 psql:
-	docker-compose exec db psql -U seyes_core
+	docker-compose exec db psql -U seyes_core seyes_core_db
 
 APP=RTSPtoWeb
 SERVER_FLAGS ?= -config config.json

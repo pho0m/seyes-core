@@ -2,7 +2,6 @@ package core
 
 import (
 	"seyes-core/internal/helper"
-	"time"
 
 	"gorm.io/gorm"
 
@@ -21,11 +20,19 @@ type RoomFilter struct {
 
 // RoomParams define params for create room
 type RoomParams struct {
-	ID     int64  `json:"id"`
-	Label  string `json:"label"`
-	CamURL string `json:"cam_url"`
-	Status string `json:"status"`
-	Active bool   `json:"active"`
+	ID             int64  `json:"id"`
+	Label          string `json:"label"`
+	CamURL         string `json:"cam_url"`
+	Status         string `json:"status"`
+	Active         bool   `json:"active"`
+	MqttTopicLamp1 string `json:"mqtt_topic_lamp_1"`
+	MqttTopicLamp2 string `json:"mqtt_topic_lamp_2"`
+	MqttTopicLamp3 string `json:"mqtt_topic_lamp_3"`
+	MqttTopicLamp4 string `json:"mqtt_topic_lamp_4"`
+	MqttTopicLamp5 string `json:"mqtt_topic_lamp_5"`
+	MqttTopicLamp6 string `json:"mqtt_topic_lamp_6"`
+	MqttTopicDoor  string `json:"mqtt_topic_door"`
+	MqttTopicAir   string `json:"mqtt_topic_air"`
 }
 
 // GetAllRoom get all room product
@@ -74,11 +81,19 @@ func GetRoom(db *gorm.DB, ps *helper.UrlParams) (map[string]interface{}, error) 
 	}
 
 	res := map[string]interface{}{
-		"id":      room.ID,
-		"label":   room.Label,
-		"cam_url": room.CamURL,
-		"status":  room.Status,
-		"active":  room.Active,
+		"id":                room.ID,
+		"label":             room.Label,
+		"cam_url":           room.CamURL,
+		"status":            room.Status,
+		"active":            room.Active,
+		"mqtt_topic_lamp_1": room.MqttTopicLamp1,
+		"mqtt_topic_lamp_2": room.MqttTopicLamp2,
+		"mqtt_topic_lamp_3": room.MqttTopicLamp3,
+		"mqtt_topic_lamp_4": room.MqttTopicLamp4,
+		"mqtt_topic_lamp_5": room.MqttTopicLamp5,
+		"mqtt_topic_lamp_6": room.MqttTopicLamp6,
+		"mqtt_topic_door":   room.MqttTopicDoor,
+		"mqtt_topic_air":    room.MqttTopicAir,
 	}
 
 	return res, nil
@@ -87,10 +102,18 @@ func GetRoom(db *gorm.DB, ps *helper.UrlParams) (map[string]interface{}, error) 
 // CreateRoom create a room
 func CreateRoom(db *gorm.DB, ps *RoomParams) (map[string]interface{}, error) {
 	room := &mo.Room{
-		Label:  ps.Label,
-		CamURL: ps.CamURL,
-		Status: ps.Status,
-		Active: ps.Active,
+		Label:          ps.Label,
+		CamURL:         ps.CamURL,
+		Status:         ps.Status,
+		Active:         ps.Active,
+		MqttTopicLamp1: ps.MqttTopicLamp1,
+		MqttTopicLamp2: ps.MqttTopicLamp2,
+		MqttTopicLamp3: ps.MqttTopicLamp3,
+		MqttTopicLamp4: ps.MqttTopicLamp4,
+		MqttTopicLamp5: ps.MqttTopicLamp5,
+		MqttTopicLamp6: ps.MqttTopicLamp6,
+		MqttTopicDoor:  ps.MqttTopicDoor,
+		MqttTopicAir:   ps.MqttTopicAir,
 	}
 
 	if err := db.Create(&room).Error; err != nil {
@@ -98,11 +121,19 @@ func CreateRoom(db *gorm.DB, ps *RoomParams) (map[string]interface{}, error) {
 	}
 
 	res := map[string]interface{}{
-		"id":      room.ID,
-		"label":   room.Label,
-		"cam_url": room.CamURL,
-		"status":  room.Status,
-		"active":  room.Active,
+		"id":                room.ID,
+		"label":             room.Label,
+		"cam_url":           room.CamURL,
+		"status":            room.Status,
+		"active":            room.Active,
+		"mqtt_topic_lamp_1": room.MqttTopicLamp1,
+		"mqtt_topic_lamp_2": room.MqttTopicLamp2,
+		"mqtt_topic_lamp_3": room.MqttTopicLamp3,
+		"mqtt_topic_lamp_4": room.MqttTopicLamp4,
+		"mqtt_topic_lamp_5": room.MqttTopicLamp5,
+		"mqtt_topic_lamp_6": room.MqttTopicLamp6,
+		"mqtt_topic_door":   room.MqttTopicDoor,
+		"mqtt_topic_air":    room.MqttTopicAir,
 	}
 
 	return res, nil
@@ -122,16 +153,33 @@ func UpdatedRoom(db *gorm.DB, ps *RoomParams) (map[string]interface{}, error) {
 	room.Status = ps.Status
 	room.Active = ps.Active
 
+	room.MqttTopicLamp1 = ps.MqttTopicLamp1
+	room.MqttTopicLamp2 = ps.MqttTopicLamp2
+	room.MqttTopicLamp3 = ps.MqttTopicLamp3
+	room.MqttTopicLamp4 = ps.MqttTopicLamp4
+	room.MqttTopicLamp5 = ps.MqttTopicLamp5
+	room.MqttTopicLamp6 = ps.MqttTopicLamp6
+	room.MqttTopicDoor = ps.MqttTopicDoor
+	room.MqttTopicAir = ps.MqttTopicAir
+
 	if err := db.Save(&room).Error; err != nil {
 		return nil, err
 	}
 
 	res := map[string]interface{}{
-		"id":      room.ID,
-		"label":   room.Label,
-		"cam_url": room.CamURL,
-		"status":  room.Status,
-		"active":  room.Active,
+		"id":                room.ID,
+		"label":             room.Label,
+		"cam_url":           room.CamURL,
+		"status":            room.Status,
+		"active":            room.Active,
+		"mqtt_topic_lamp_1": room.MqttTopicLamp1,
+		"mqtt_topic_lamp_2": room.MqttTopicLamp2,
+		"mqtt_topic_lamp_3": room.MqttTopicLamp3,
+		"mqtt_topic_lamp_4": room.MqttTopicLamp4,
+		"mqtt_topic_lamp_5": room.MqttTopicLamp5,
+		"mqtt_topic_lamp_6": room.MqttTopicLamp6,
+		"mqtt_topic_door":   room.MqttTopicDoor,
+		"mqtt_topic_air":    room.MqttTopicAir,
 	}
 
 	return res, nil
@@ -140,13 +188,13 @@ func UpdatedRoom(db *gorm.DB, ps *RoomParams) (map[string]interface{}, error) {
 // DeletedRoom delete a room
 func DeletedRoom(db *gorm.DB, id int64) error {
 	var room mo.Room
-	t := time.Now()
+	// t := time.Now()
 
 	if err := db.Where("id = ?", id).
 		First(&room).Error; err != nil {
 		return err
 	}
-	room.DeletedAt = &t
+	// room.DeletedAt = &t
 
 	if err := db.Delete(&room).Error; err != nil {
 		return err

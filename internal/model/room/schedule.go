@@ -16,4 +16,5 @@ type Schedule struct {
 	Subject   string `json:"subject"`
 	Label     string `json:"label"`
 	Prefix    string `json:"prefix"`
+	Active    bool   `json:"active"`
 }

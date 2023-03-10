@@ -34,10 +34,9 @@ func NewSettingsController(sc *service.Container) *SettingController {
 
 // GetSettingsHandler endpoint for get a Settings
 func (h *SettingController) GetSettingsHandler(w http.ResponseWriter, r *http.Request) {
-	ps := helper.ParsingQueryString(chi.URLParam(r, "id"))
 
 	res, err := core.GetSetting(h.db, &helper.UrlParams{
-		ID: ps.ID,
+		ID: 1,
 	})
 
 	if err != nil {
