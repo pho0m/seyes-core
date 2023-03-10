@@ -33,7 +33,7 @@ func main() {
 	}
 
 	if _, err := core.CreateSettings(sc.DB, &core.SettingsParams{
-		AiModelData:           "test",
+		AiModelData:           "test", //FIXME
 		CronjobTime:           "test",
 		LineNotifyAccessToken: "test",
 	}); err != nil {
