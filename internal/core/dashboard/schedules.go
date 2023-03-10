@@ -6,6 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// FIXME relate with room
 // ScheduleFilter define Schedule filter
 type ScheduleFilter struct {
 	Page    int64    `json:"page"`

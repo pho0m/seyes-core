@@ -35,7 +35,7 @@ func (h *RoomController) IndexRoomHandler(w http.ResponseWriter, r *http.Request
 
 	ps := helper.ParsingQueryString(r.URL.Query())
 
-	drws, err := core.GetAllRoom(h.db, &core.RoomFilter{
+	rooms, err := core.GetAllRoom(h.db, &core.RoomFilter{
 		ID:      ps.ID,
 		Page:    ps.Page,
 		OrderBy: ps.OrderBy,
@@ -47,7 +47,7 @@ func (h *RoomController) IndexRoomHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	h.JSON(w, drws)
+	h.JSON(w, rooms)
 }
 
 // GetRoomHandler endpoint for get a room

@@ -32,19 +32,7 @@ func SetupRoutes(sc *service.Container, r chi.Router) {
 
 		r.Get("/", c.HealthCheck)
 		r.Post("/notify", c.Notify)
-
-		r.Get("/models/default", c.ReadModelFile)
-
-		r.Route("/rooms", func(r chi.Router) {
-			room := NewRoomController(sc)
-
-			r.Get("/", room.IndexRoomHandler)
-			r.Get("/{id}", room.GetRoomHandler)
-			r.Post("/new", room.CreateRoomHandler)
-			r.Put("/edit/{id}", room.UpdateRoomHandler)
-			r.Delete("/delete/{id}", room.DeleteRoomHandler)
-		})
-
+		// r.Get("/models/default", c.ReadModelFile)
 		r.Route("/settings", func(r chi.Router) {
 			room := NewSettingsController(sc)
 
@@ -52,6 +40,25 @@ func SetupRoutes(sc *service.Container, r chi.Router) {
 			r.Put("/edit/{id}", room.UpdateSettingsHandler)
 		})
 
+		r.Route("/rooms", func(r chi.Router) {
+			roc := NewRoomController(sc)
+
+			r.Get("/", roc.IndexRoomHandler)
+			r.Get("/{id}", roc.GetRoomHandler)
+			r.Post("/new", roc.CreateRoomHandler)
+			r.Put("/edit/{id}", roc.UpdateRoomHandler)
+			r.Delete("/delete/{id}", roc.DeleteRoomHandler)
+		})
+
+		r.Route("/reports", func(r chi.Router) {
+			rec := NewReportController(sc)
+
+			r.Get("/", rec.IndexReportHandler)
+			r.Get("/{id}", rec.GetReportHandler)
+			r.Post("/new", rec.CreateReportHandler)
+			r.Put("/edit/{id}", rec.UpdateReportHandler)
+			r.Delete("/delete/{id}", rec.DeleteReportHandler)
+		})
 	})
 
 }

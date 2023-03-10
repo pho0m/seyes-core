@@ -2,6 +2,7 @@ package helper
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"math"
 	"math/rand"
@@ -10,6 +11,7 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -18,11 +20,11 @@ const PERPAGEWEB = 20
 
 // const digit = 100
 
-// // Layout time
-// const defTime = "0001-01-01T00:00:00Z"
-// const layoutDateTime = "2006-01-02T15:04:05Z"
-// const layoutDate = "2006-01-02"
-// const layoutTime = "15:04"
+// Layout time
+const DEFTIME = "0001-01-01T00:00:00Z"
+const LAYOUTDATETIME = "2006-01-02T15:04:05Z"
+const LAYOUTDATE = "2006-01-02"
+const LAYOUTTIME = "15:04"
 
 // Size constants
 const (
@@ -352,4 +354,142 @@ func ReturnError(w http.ResponseWriter, err interface{}, msg string, status int)
 	if _, err := w.Write([]byte("ok")); err != nil {
 		log.Println("Cannot write a response:", err.Error())
 	}
+}
+
+// FormatDateTime parse type & datetime to return type date,time,datetime format
+func FormatDateTime(typedt string, dt string) *time.Time {
+	var res time.Time
+
+	switch {
+	case typedt == "datetime":
+		res, _ = time.Parse(LAYOUTDATETIME, dt)
+	case typedt == "date":
+		res, _ = time.Parse(LAYOUTDATE, dt)
+	case typedt == "time":
+		date, _ := time.Parse(LAYOUTDATETIME, dt)
+		newTime, _ := time.Parse(LAYOUTTIME, dt)
+		newRes := time.Date(date.Year(), date.Month(), date.Day(), newTime.Hour(), newTime.Minute(), newTime.Second(), newTime.Nanosecond(), time.Local)
+		res = newRes
+	}
+
+	return &res
+}
+
+// GetTimeStamp Time of create the request.the format is '%Y%m%d%H%M%S%SS'
+func GetTimeStamp() string {
+	return time.Now().Format("20060102150405")
+}
+
+// PrettierDatetime format datetime to prettier format string
+func PrettierDatetime(d *time.Time, t *time.Time, typedt string) string {
+	var newT string
+
+	switch {
+	case typedt == "date":
+		newD := d.Add(time.Hour * 7)
+		newT = fmt.Sprintf(
+			"%d/%d/%d",
+			newD.Day(),
+			newD.Month(),
+			newD.Year(),
+		)
+	case typedt == "date-dashes":
+		newD := d.Add(time.Hour * 7)
+		newT = newD.Format(LAYOUTDATE)
+
+	case typedt == "time":
+		newT = t.Format(time.Kitchen)
+
+	case typedt == "slash":
+		newD := d.Add(time.Hour * 7)
+		newT = fmt.Sprintf("%d/%d/%d %s",
+			newD.Day(),
+			newD.Month(),
+			newD.Year(),
+			newD.Format(time.Kitchen))
+
+	default:
+		if d != nil && t != nil {
+			newD := d.Add(time.Hour * 7)
+			newT = fmt.Sprintf("%d %s %d / %s",
+				newD.Day(),
+				newD.Month().String(),
+				newD.Year(),
+				t.Format(time.Kitchen))
+
+		} else {
+
+			if d.Format(DEFTIME) == DEFTIME {
+				return ""
+			}
+			newD := d.Add(time.Hour * 7)
+			newT = fmt.Sprintf("%d %s %d / %s",
+				newD.Day(),
+				newD.Month().String(),
+				newD.Year(),
+				newD.Format(time.Kitchen))
+		}
+	}
+
+	return newT
+}
+
+// ParseNullTime check time is it default time and return time or nil
+func ParseNullTime(t *time.Time) *time.Time {
+	var defT = time.Time{}
+
+	if t == nil {
+		return nil
+	}
+
+	if t.Equal(defT) {
+		return nil
+	}
+
+	return t
+}
+
+// Equal compare two slice of string
+func Equal(a, b interface{}) bool {
+	_, okA := a.([]string)
+	_, okB := b.([]string)
+
+	if !okA && !okB {
+		a := a.([]int64)
+		b := b.([]int64)
+
+		if len(a) != len(b) {
+			return false
+		}
+		for i, v := range a {
+			if v != b[i] {
+				return false
+			}
+		}
+		return true
+	} else {
+		a := a.([]string)
+		b := b.([]string)
+
+		if len(a) != len(b) {
+			return false
+		}
+		for i, v := range a {
+			if v != b[i] {
+				return false
+			}
+		}
+		return true
+	}
+
+}
+
+// UTCTime add 7 hr from utc + 00
+func UTCTime(t *time.Time) time.Time {
+	return t.Add(time.Hour * 7)
+}
+
+// LocalTime minus 7 hr from utc + 00
+func LocalTime(t *time.Time) time.Time {
+	return t.Add(time.Duration(-7) * time.Hour)
 }
