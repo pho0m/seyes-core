@@ -18,6 +18,7 @@ type SettingsParams struct {
 	MqttUserName          string `json:"mqtt_username"`
 	MqttPassword          string `json:"mqtt_password"`
 	MqttPort              string `json:"mqtt_port"`
+	MqttClientName        string `json:"mqtt_client_name"`
 }
 
 // GetSetting get a room by room id

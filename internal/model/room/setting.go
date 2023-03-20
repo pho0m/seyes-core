@@ -12,8 +12,9 @@ type Setting struct {
 	CronjobTime           string `json:"cronjob_time"`
 	LineNotifyAccessToken string `json:"notify_access_token"`
 
-	MqttIp       string `json:"mqtt_ip"`
-	MqttUserName string `json:"mqtt_username"`
-	MqttPassword string `json:"mqtt_password"`
-	MqttPort     string `json:"mqtt_port"`
+	MqttIp         string `json:"mqtt_ip"`
+	MqttUserName   string `json:"mqtt_username"`
+	MqttPassword   string `json:"mqtt_password"`
+	MqttPort       string `json:"mqtt_port"`
+	MqttClientName string `json:"mqtt_client_name"`
 }

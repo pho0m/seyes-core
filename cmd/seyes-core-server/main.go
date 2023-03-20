@@ -78,6 +78,7 @@ func initSetting(db *gorm.DB) error {
 			MqttUserName:          "",
 			MqttPassword:          "",
 			MqttPort:              "",
+			MqttClientName:        "",
 		}); err != nil {
 			return err
 		}
