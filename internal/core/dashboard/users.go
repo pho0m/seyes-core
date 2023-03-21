@@ -1,4 +1,4 @@
-package users
+package core
 
 import (
 	"seyes-core/internal/helper"
@@ -145,8 +145,8 @@ func UpdatedUser(db *gorm.DB, ps *UserParams) (map[string]interface{}, error) {
 	return res, nil
 }
 
-// DeletedRoom delete a room
-func DeletedRoom(db *gorm.DB, id int64) error {
+// DeletedUser delete a user
+func DeletedUser(db *gorm.DB, id int64) error {
 	var user mo.User
 	// t := time.Now()
 
