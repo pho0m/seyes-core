@@ -5,11 +5,16 @@ import (
 
 	"gorm.io/gorm"
 
+	modelRoom "seyes-core/internal/model/room"
 	modelUser "seyes-core/internal/model/user"
 )
 
 var tableSets = []interface{}{
 	modelUser.User{},
+	modelRoom.Report{},
+	modelRoom.Room{},
+	modelRoom.Schedule{},
+	modelRoom.Setting{},
 }
 
 // Container defines a service container

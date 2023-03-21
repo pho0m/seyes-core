@@ -1,11 +1,11 @@
-FROM golang:1.15.1-alpine as base
+FROM golang:1.19-alpine as base
 
 WORKDIR /app
 
 RUN apk add --update --no-cache git ca-certificates make zip tzdata build-base
 RUN \
     cd /tmp && \
-    GO111MODULE=on go get github.com/cortesi/modd/cmd/modd && \
+    GO111MODULE=off go get github.com/cortesi/modd/cmd/modd && \
     cd -
 
 RUN zip -q -r -0 /zoneinfo.zip /usr/share/zoneinfo
@@ -16,7 +16,7 @@ FROM base as builder
 COPY go.mod /app
 COPY go.sum /app
 
-RUN go mod download
+RUN go mod tidy
 
 COPY . /app
 
@@ -35,3 +35,4 @@ COPY --from=builder /go/bin/seyes-core-server /seyes-core-server
 
 EXPOSE 3000
 CMD ["/seyes-core-server"]
+

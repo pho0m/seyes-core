@@ -38,6 +38,7 @@ func (h *BaseRender) JSON(w http.ResponseWriter, v interface{}) {
 	}
 }
 
+// Error return a Error response
 func (h *BaseRender) Error(w http.ResponseWriter, err interface{}, msg string, statusCode int) {
 	w.Header().Set("Content-Type", "application/json")
 
@@ -110,4 +111,3 @@ func (h *BaseRender) Error(w http.ResponseWriter, err interface{}, msg string, s
 		log.Println("Cannot write a response:", err.Error())
 	}
 }
-
