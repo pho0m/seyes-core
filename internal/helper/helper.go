@@ -2,6 +2,7 @@ package helper
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"math"
 	"math/rand"
@@ -10,6 +11,7 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -18,11 +20,11 @@ const PERPAGEWEB = 20
 
 // const digit = 100
 
-// // Layout time
-// const defTime = "0001-01-01T00:00:00Z"
-// const layoutDateTime = "2006-01-02T15:04:05Z"
-// const layoutDate = "2006-01-02"
-// const layoutTime = "15:04"
+// Layout time
+const DEFTIME = "0001-01-01T00:00:00Z"
+const LAYOUTDATETIME = "2006-01-02T15:04:05Z"
+const LAYOUTDATE = "2006-01-02"
+const LAYOUTTIME = "15:04"
 
 // Size constants
 const (
@@ -46,70 +48,31 @@ type ErrParams struct {
 
 // UrlParams define filter component
 type UrlParams struct {
-	Status     string `json:"status"`
-	Slug       string `json:"slug"`
-	ShopID     int64  `json:"shop_id"`
-	BranchID   int64  `json:"branch_id"`
-	CatID      int64  `json:"cat_id"`
-	AttrID     int64  `json:"attr_id"`
-	Page       int64  `json:"pages"`
-	ID         int64  `json:"id"`
-	CusID      int64  `json:"cus_id"`
-	Keyword    string `json:"keyword"`
-	OrderNo    string `json:"order_no"`
-	PrintType  string `json:"print_type"`
-	Channel    string `json:"channel"`
-	Level      int64  `json:"level"`
-	MchOrderNo string `json:"mch_order_no"`
-	Type       string `json:"type"`
-	OrderRef   string `json:"order_ref"`
+	Status  string `json:"status"`
+	Slug    string `json:"slug"`
+	Page    int64  `json:"pages"`
+	ID      int64  `json:"id"`
+	OrderNo string `json:"order_no"`
 }
 
 // QueryStringParams defines struct for r.Query()
 type QueryStringParams struct {
-	ID               int64
-	Slug             string
-	Page             int64
-	ShopID           int64
-	BranchID         int64
-	SKU              string
-	OrderNo          string
-	Name             string
-	FirstName        string
-	LastName         string
-	Phone            string
-	Email            string
-	Date             string
-	Time             string
-	PreorderDatetime string
-	DateStart        string
-	DateEnd          string
-	UpdateAt         string
-	CreateAt         string
-	OrderBy          string
-	SortBy           string
-	BranchIDs        []int64
-	Categories       []int64
-	Attributes       []int64
-	AttributeItems   []int64
-	Status           []string
-	Channel          []string
-	ShippingMethod   []string
-	ShippingStatus   []string
-	PaymentStatus    []string
-	PaymentMethod    []string
-	Type             []string
-	Actives          []string
-	SellOnPreorder   []string
-	UserID           []int64
-	Roles            []string
-	UserIDs          []int64
-	PreorderDate     string
-	PreorderTime     string
-	OrderRef         string
-	Referral         string
-	ReconcileIDs     []int64
-	IncludeIvt       string
+	ID        int64
+	Slug      string
+	Page      int64
+	Name      string
+	FirstName string
+	LastName  string
+	Phone     string
+	Email     string
+	Date      string
+	Time      string
+	DateStart string
+	DateEnd   string
+	UpdateAt  string
+	CreateAt  string
+	OrderBy   string
+	SortBy    string
 }
 
 type PaginateParams struct {
@@ -207,190 +170,29 @@ func ParsingQueryUpload(query interface{}) *QueryUploadParams {
 // ParsingQueryString parse query string and return type int
 func ParsingQueryString(query interface{}) *QueryStringParams {
 	var (
-		page            = 0
-		sID             = 0
-		bID             = 0
-		ID              = 0
-		Slug            = ""
-		orderNo         = ""
-		users           []string
-		usrsIDs         []int64
-		status          = ""
-		st              []string
-		channel         = ""
-		ch              []string
-		shippingMethod  = ""
-		sm              []string
-		shippingStatus  = ""
-		ss              []string
-		paymentStatus   = ""
-		pys             []string
-		paymentMethod   = ""
-		pym             []string
-		typo            = ""
-		typs            []string
-		category        = ""
-		categories      []int64
-		active          = ""
-		actives         []string
-		sellOnPreorder  = ""
-		sellOnPreorders []string
-		branchName      = ""
-		branchesName    []string
-		branchIDs       []int64
-		role            = ""
-		roles           []string
-		attribute       = ""
-		attributes      []int64
-		attributeItem   = ""
-		attributeItems  []int64
-		firstName       = ""
-		lastName        = ""
-		name            = ""
-		phone           = ""
-		email           = ""
-		date            = ""
-		time            = ""
-		dateStart       = ""
-		dateEnd         = ""
-		sku             = ""
-		createdAt       = ""
-		updatedAt       = ""
-		orderBy         = ""
-		sortBy          = ""
-		preDt           = ""
-		preDate         = ""
-		preTime         = ""
-		orderRef        = ""
-		referral        = ""
-		reconcile       = ""
-		includeIvt      = ""
-		reconciles      []string
-		reconcileIDs    []int64
+		page      = 0
+		ID        = 0
+		Slug      = ""
+		firstName = ""
+		lastName  = ""
+		name      = ""
+		phone     = ""
+		email     = ""
+		date      = ""
+		time      = ""
+		dateStart = ""
+		dateEnd   = ""
+		createdAt = ""
+		updatedAt = ""
+		orderBy   = ""
+		sortBy    = ""
 	)
 
 	switch v := query.(type) {
 	case url.Values:
 		p := v.Get("page")
-		s := v.Get("shop_id")
-		b := v.Get("branch_id")
 
 		page, _ = strconv.Atoi(p)
-		sID, _ = strconv.Atoi(s)
-		bID, _ = strconv.Atoi(b)
-
-		orderNo = v.Get("order_no")
-
-		status = v.Get("status")
-		if status != "" {
-			st = strings.Split(status, ",")
-		}
-
-		channel = v.Get("channel")
-		if channel != "" {
-			ch = strings.Split(channel, ",")
-		}
-
-		shippingMethod = v.Get("shipping_method")
-		if shippingMethod != "" {
-			sm = strings.Split(shippingMethod, ",")
-		}
-
-		shippingStatus = v.Get("shipping_status")
-		if shippingStatus != "" {
-			ss = strings.Split(shippingStatus, ",")
-		}
-
-		paymentStatus = v.Get("payment_status")
-		if paymentStatus != "" {
-			pys = strings.Split(paymentStatus, ",")
-		}
-
-		paymentMethod = v.Get("payment_method")
-		if paymentMethod != "" {
-			pym = strings.Split(paymentMethod, ",")
-		}
-
-		category = v.Get("category")
-		if category != "" {
-			cts := strings.Split(category, ",")
-
-			for _, i := range cts {
-				ctID, _ := strconv.Atoi(i)
-				categories = append(categories, int64(ctID))
-			}
-
-		}
-
-		attribute = v.Get("attribute")
-		if attribute != "" {
-			ats := strings.Split(attribute, ",")
-
-			for _, i := range ats {
-				atID, _ := strconv.Atoi(i)
-				attributes = append(attributes, int64(atID))
-			}
-		}
-
-		attributeItem = v.Get("attribute_item")
-		if attributeItem != "" {
-			ats := strings.Split(attributeItem, ",")
-
-			for _, i := range ats {
-				atID, _ := strconv.Atoi(i)
-				attributeItems = append(attributeItems, int64(atID))
-			}
-		}
-
-		active = v.Get("active")
-		if active != "" {
-			actives = strings.Split(active, ",")
-		}
-
-		sellOnPreorder = v.Get("sell_on_preorder")
-		if sellOnPreorder != "" {
-			sellOnPreorders = strings.Split(sellOnPreorder, ",")
-		}
-
-		branchName = v.Get("branch_name")
-		if branchName != "" {
-			branchesName = strings.Split(branchName, ",")
-
-			for _, i := range branchesName {
-				bID, _ := strconv.Atoi(i)
-				branchIDs = append(branchIDs, int64(bID))
-			}
-		}
-
-		reconcile = v.Get("reconcile")
-		if reconcile != "" {
-			reconciles = strings.Split(reconcile, ",")
-
-			for _, i := range reconciles {
-				recID, _ := strconv.Atoi(i)
-				reconcileIDs = append(reconcileIDs, int64(recID))
-			}
-		}
-
-		role = v.Get("role")
-		if role != "" {
-			roles = strings.Split(role, ",")
-		}
-
-		typo = v.Get("type")
-		if typo != "" {
-			typs = strings.Split(typo, ",")
-		}
-
-		u := v.Get("user")
-		if u != "" {
-			users = strings.Split(u, ",")
-
-			for _, i := range users {
-				uID, _ := strconv.Atoi(i)
-				usrsIDs = append(usrsIDs, int64(uID))
-			}
-		}
 
 		name = v.Get("name")
 		firstName = v.Get("first_name")
@@ -405,13 +207,6 @@ func ParsingQueryString(query interface{}) *QueryStringParams {
 		sortBy = v.Get("sort_by")
 		createdAt = v.Get("created_at")
 		updatedAt = v.Get("updated_at")
-		sku = v.Get("sku")
-		preDt = v.Get("preorder_datetime")
-		preDate = v.Get("preorder_date")
-		preTime = v.Get("preorder_time")
-		orderRef = v.Get("order_ref")
-		referral = v.Get("referral")
-		includeIvt = v.Get("include_ivt")
 
 	case string:
 		ID, _ = strconv.Atoi(v)
@@ -420,48 +215,22 @@ func ParsingQueryString(query interface{}) *QueryStringParams {
 	}
 
 	return &QueryStringParams{
-		Page:             int64(page),
-		ShopID:           int64(sID),
-		BranchID:         int64(bID),
-		ID:               int64(ID),
-		Slug:             Slug,
-		OrderNo:          orderNo,
-		Status:           st,
-		Channel:          ch,
-		Name:             name,
-		FirstName:        firstName,
-		LastName:         lastName,
-		Phone:            phone,
-		Email:            email,
-		ShippingMethod:   sm,
-		ShippingStatus:   ss,
-		PaymentStatus:    pys,
-		PaymentMethod:    pym,
-		Type:             typs,
-		Date:             date,
-		Time:             time,
-		DateStart:        dateStart,
-		DateEnd:          dateEnd,
-		OrderBy:          orderBy,
-		SortBy:           sortBy,
-		Categories:       categories,
-		Attributes:       attributes,
-		AttributeItems:   attributeItems,
-		Actives:          actives,
-		SellOnPreorder:   sellOnPreorders,
-		BranchIDs:        branchIDs,
-		CreateAt:         createdAt,
-		UpdateAt:         updatedAt,
-		SKU:              sku,
-		Roles:            roles,
-		PreorderDatetime: preDt,
-		UserIDs:          usrsIDs,
-		PreorderDate:     preDate,
-		PreorderTime:     preTime,
-		OrderRef:         orderRef,
-		Referral:         referral,
-		ReconcileIDs:     reconcileIDs,
-		IncludeIvt:       includeIvt,
+		Page:      int64(page),
+		ID:        int64(ID),
+		Slug:      Slug,
+		Name:      name,
+		FirstName: firstName,
+		LastName:  lastName,
+		Phone:     phone,
+		Email:     email,
+		Date:      date,
+		Time:      time,
+		DateStart: dateStart,
+		DateEnd:   dateEnd,
+		OrderBy:   orderBy,
+		SortBy:    sortBy,
+		CreateAt:  createdAt,
+		UpdateAt:  updatedAt,
 	}
 }
 
@@ -585,4 +354,142 @@ func ReturnError(w http.ResponseWriter, err interface{}, msg string, status int)
 	if _, err := w.Write([]byte("ok")); err != nil {
 		log.Println("Cannot write a response:", err.Error())
 	}
+}
+
+// FormatDateTime parse type & datetime to return type date,time,datetime format
+func FormatDateTime(typedt string, dt string) *time.Time {
+	var res time.Time
+
+	switch {
+	case typedt == "datetime":
+		res, _ = time.Parse(LAYOUTDATETIME, dt)
+	case typedt == "date":
+		res, _ = time.Parse(LAYOUTDATE, dt)
+	case typedt == "time":
+		date, _ := time.Parse(LAYOUTDATETIME, dt)
+		newTime, _ := time.Parse(LAYOUTTIME, dt)
+		newRes := time.Date(date.Year(), date.Month(), date.Day(), newTime.Hour(), newTime.Minute(), newTime.Second(), newTime.Nanosecond(), time.Local)
+		res = newRes
+	}
+
+	return &res
+}
+
+// GetTimeStamp Time of create the request.the format is '%Y%m%d%H%M%S%SS'
+func GetTimeStamp() string {
+	return time.Now().Format("20060102150405")
+}
+
+// PrettierDatetime format datetime to prettier format string
+func PrettierDatetime(d *time.Time, t *time.Time, typedt string) string {
+	var newT string
+
+	switch {
+	case typedt == "date":
+		newD := d.Add(time.Hour * 7)
+		newT = fmt.Sprintf(
+			"%d/%d/%d",
+			newD.Day(),
+			newD.Month(),
+			newD.Year(),
+		)
+	case typedt == "date-dashes":
+		newD := d.Add(time.Hour * 7)
+		newT = newD.Format(LAYOUTDATE)
+
+	case typedt == "time":
+		newT = t.Format(time.Kitchen)
+
+	case typedt == "slash":
+		newD := d.Add(time.Hour * 7)
+		newT = fmt.Sprintf("%d/%d/%d %s",
+			newD.Day(),
+			newD.Month(),
+			newD.Year(),
+			newD.Format(time.Kitchen))
+
+	default:
+		if d != nil && t != nil {
+			newD := d.Add(time.Hour * 7)
+			newT = fmt.Sprintf("%d %s %d / %s",
+				newD.Day(),
+				newD.Month().String(),
+				newD.Year(),
+				t.Format(time.Kitchen))
+
+		} else {
+
+			if d.Format(DEFTIME) == DEFTIME {
+				return ""
+			}
+			newD := d.Add(time.Hour * 7)
+			newT = fmt.Sprintf("%d %s %d / %s",
+				newD.Day(),
+				newD.Month().String(),
+				newD.Year(),
+				newD.Format(time.Kitchen))
+		}
+	}
+
+	return newT
+}
+
+// ParseNullTime check time is it default time and return time or nil
+func ParseNullTime(t *time.Time) *time.Time {
+	var defT = time.Time{}
+
+	if t == nil {
+		return nil
+	}
+
+	if t.Equal(defT) {
+		return nil
+	}
+
+	return t
+}
+
+// Equal compare two slice of string
+func Equal(a, b interface{}) bool {
+	_, okA := a.([]string)
+	_, okB := b.([]string)
+
+	if !okA && !okB {
+		a := a.([]int64)
+		b := b.([]int64)
+
+		if len(a) != len(b) {
+			return false
+		}
+		for i, v := range a {
+			if v != b[i] {
+				return false
+			}
+		}
+		return true
+	} else {
+		a := a.([]string)
+		b := b.([]string)
+
+		if len(a) != len(b) {
+			return false
+		}
+		for i, v := range a {
+			if v != b[i] {
+				return false
+			}
+		}
+		return true
+	}
+
+}
+
+// UTCTime add 7 hr from utc + 00
+func UTCTime(t *time.Time) time.Time {
+	return t.Add(time.Hour * 7)
+}
+
+// LocalTime minus 7 hr from utc + 00
+func LocalTime(t *time.Time) time.Time {
+	return t.Add(time.Duration(-7) * time.Hour)
 }

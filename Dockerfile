@@ -33,6 +33,5 @@ COPY --from=base /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
 COPY --from=builder /go/bin/seyes-core-server /seyes-core-server
 
-EXPOSE 3000
 CMD ["/seyes-core-server"]
 

@@ -1,4 +1,4 @@
-package core
+package helper
 
 import (
 	"bytes"
@@ -7,13 +7,13 @@ import (
 	"mime/multipart"
 	"net/http"
 	"path"
-	"seyes-core/internal/helper"
 	"strings"
 
 	"github.com/gofrs/uuid"
 )
 
-//APIS UPLOAD PHOTO V2
+//*FIXME please refactor comment function
+
 // PhotoFileParams defines File for Upload Photo
 type PhotoFileParams struct {
 	Bucket     string
@@ -31,10 +31,10 @@ type Media struct {
 	Type     string `json:"type"`
 }
 
-// UploadPhoto uploads file to cloud storage // FIXME
-func UploadPhoto(ps *helper.UploadFileParams) (*Media, error) {
+// UploadPhoto uploads file to web server // FIXME
+func UploadPhoto(ps *UploadFileParams) (*Media, error) {
 	mediaName := "media_dev/temp" //os.Getenv("STORAGE_MEDIA_NAME")
-	padding, err := helper.GeneratePadding()
+	padding, err := GeneratePadding()
 
 	if err != nil {
 		return nil, err
@@ -58,13 +58,13 @@ func UploadPhoto(ps *helper.UploadFileParams) (*Media, error) {
 	return m, nil
 }
 
-func makeMultipartBody(message string, image multipart.File) (body bytes.Buffer, contentType string, err error) {
+func MakeMultipartBody(message string, image multipart.File) (body bytes.Buffer, contentType string, err error) {
 	writer := multipart.NewWriter(&body)
 
-	if err = writeBodyInMessage(writer, message); err != nil {
+	if err = WriteBodyInMessage(writer, message); err != nil {
 		return
 	}
-	if err = writeBodyInImageFile(writer, image); err != nil {
+	if err = WriteBodyInImageFile(writer, image); err != nil {
 		return
 	}
 	writer.Close()
@@ -73,7 +73,7 @@ func makeMultipartBody(message string, image multipart.File) (body bytes.Buffer,
 	return
 }
 
-func writeBodyInMessage(writer *multipart.Writer, message string) (err error) {
+func WriteBodyInMessage(writer *multipart.Writer, message string) (err error) {
 	var messageWriter io.Writer
 	messageWriter, err = writer.CreateFormField("message")
 	if err != nil {
@@ -85,10 +85,10 @@ func writeBodyInMessage(writer *multipart.Writer, message string) (err error) {
 	return
 }
 
-func writeBodyInImageFile(writer *multipart.Writer, image multipart.File) (err error) {
+func WriteBodyInImageFile(writer *multipart.Writer, image multipart.File) (err error) {
 
 	mediaName := "media_dev/" //os.Getenv("STORAGE_MEDIA_NAME")
-	padding, err := helper.GeneratePadding()
+	padding, err := GeneratePadding()
 
 	if err != nil {
 		return err
