@@ -18,7 +18,7 @@ type NotifyParam struct {
 	ComOn     int64          `json:"com_on"`
 	UploadAt  string         `json:"upload_at"`
 	Time      string         `json:"time"`
-	Photo     multipart.File `json:"photo"`
+	Image     multipart.File `json:"image"`
 	Accurency string         `json:"accurency"`
 }
 
@@ -44,7 +44,7 @@ func SendToLineNotify(ps *NotifyParam) (*ResponseNotify, error) {
 		"Time : " + ps.Time + "\n" +
 		"Accurency : " + ps.Accurency + "%"
 
-	body, contentType, err := helper.MakeMultipartBody(message, ps.Photo)
+	body, contentType, err := helper.MakeMultipartBody(message, ps.Image)
 
 	if err != nil {
 		return nil, err

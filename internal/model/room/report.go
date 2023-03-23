@@ -14,7 +14,7 @@ type Report struct {
 	RoomLabel  string  `json:"room_label"`
 	ReportTime string  `json:"report_time"`
 	ReportDate string  `json:"report_date"`
-	Photo      string  `json:"photo"`
+	Image      string  `json:"image"`
 
 	Status string `json:"status"`
 	Lamp1  string `json:"lamp_1_status"`
