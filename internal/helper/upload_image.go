@@ -14,8 +14,8 @@ import (
 
 //*FIXME please refactor comment function
 
-// PhotoFileParams defines File for Upload Photo
-type PhotoFileParams struct {
+// ImageFileParams defines File for Upload image
+type ImageFileParams struct {
 	Bucket     string
 	PublicRead bool
 	MediaType  string
@@ -31,9 +31,9 @@ type Media struct {
 	Type     string `json:"type"`
 }
 
-// UploadPhoto uploads file to web server // FIXME
-func UploadPhoto(ps *UploadFileParams) (*Media, error) {
-	mediaName := "media_dev/temp" //os.Getenv("STORAGE_MEDIA_NAME")
+// UploadImage uploads file to web server // FIXME
+func UploadImage(ps *UploadFileParams) (*Media, error) {
+	mediaName := "media/temp" //os.Getenv("STORAGE_MEDIA_NAME")
 	padding, err := GeneratePadding()
 
 	if err != nil {
@@ -87,7 +87,7 @@ func WriteBodyInMessage(writer *multipart.Writer, message string) (err error) {
 
 func WriteBodyInImageFile(writer *multipart.Writer, image multipart.File) (err error) {
 
-	mediaName := "media_dev/" //os.Getenv("STORAGE_MEDIA_NAME")
+	mediaName := "media/" //os.Getenv("STORAGE_MEDIA_NAME")
 	padding, err := GeneratePadding()
 
 	if err != nil {

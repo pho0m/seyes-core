@@ -50,11 +50,19 @@ func GetAllRoom(db *gorm.DB, filter *RoomFilter) (map[string]interface{}, error)
 
 	for _, r := range room {
 		resRooms = append(resRooms, RoomParams{
-			ID:     int64(r.ID),
-			Label:  r.Label,
-			CamURL: r.CamURL,
-			Status: r.Status,
-			Active: r.Active,
+			ID:             int64(r.ID),
+			Label:          r.Label,
+			CamURL:         r.CamURL,
+			Status:         r.Status,
+			Active:         r.Active,
+			MqttTopicLamp1: r.MqttTopicLamp1,
+			MqttTopicLamp2: r.MqttTopicLamp2,
+			MqttTopicLamp3: r.MqttTopicLamp3,
+			MqttTopicLamp4: r.MqttTopicLamp4,
+			MqttTopicLamp5: r.MqttTopicLamp5,
+			MqttTopicLamp6: r.MqttTopicLamp6,
+			MqttTopicDoor:  r.MqttTopicDoor,
+			MqttTopicAir:   r.MqttTopicAir,
 		})
 	}
 

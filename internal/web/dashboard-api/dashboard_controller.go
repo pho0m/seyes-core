@@ -37,10 +37,10 @@ func (c *DashboardController) HealthCheck(w http.ResponseWriter, r *http.Request
 func (c *DashboardController) Notify(w http.ResponseWriter, r *http.Request) {
 
 	r.Body = http.MaxBytesReader(w, r.Body, 4*1024*1024) // 4 Mb
-	file, handler, err := r.FormFile("photo")
+	file, handler, err := r.FormFile("image")
 
 	if err != nil {
-		c.Error(w, err, "error upload photo", http.StatusBadRequest)
+		c.Error(w, err, "error upload image", http.StatusBadRequest)
 		return
 	}
 
@@ -50,7 +50,7 @@ func (c *DashboardController) Notify(w http.ResponseWriter, r *http.Request) {
 	u := helper.ParsingUploadFileParams(file, handler)
 
 	data := noti.NotifyParam{
-		Photo:     u.File,
+		Image:     u.File,
 		ID:        ps.ID,
 		Person:    ps.Person,
 		ComOn:     ps.ComOn,

@@ -27,7 +27,7 @@ type ReportsParams struct {
 	RoomLabel  string  `json:"room_label"`
 	ReportTime string  `json:"report_time"`
 	ReportDate string  `json:"report_date"`
-	Photo      string  `json:"photo"`
+	Image      string  `json:"image"`
 	Status     string  `json:"status"`
 	Lamp1      string  `json:"lamp_1_status"`
 	Lamp2      string  `json:"lamp_2_status"`
@@ -61,7 +61,7 @@ func GetAllReports(db *gorm.DB, filter *ReportsFilter) (map[string]interface{}, 
 			RoomLabel:  r.RoomLabel,
 			ReportTime: r.ReportTime,
 			ReportDate: r.ReportDate,
-			Photo:      r.Photo,
+			Image:      r.Image,
 			Status:     r.Status,
 			Lamp1:      r.Lamp1,
 			Lamp2:      r.Lamp2,
@@ -105,7 +105,7 @@ func GetReport(db *gorm.DB, ps *helper.UrlParams) (map[string]interface{}, error
 		"room_label":    report.RoomLabel,
 		"report_time":   report.ReportTime,
 		"report_date":   report.ReportDate,
-		"photo":         report.Photo,
+		"image":         report.Image,
 		"status":        report.Status,
 		"lamp_1_status": report.Lamp1,
 		"lamp_2_status": report.Lamp2,
@@ -128,7 +128,7 @@ func CreateReport(db *gorm.DB, ps *ReportsParams) (map[string]interface{}, error
 		RoomLabel:  ps.RoomLabel,
 		ReportTime: ps.ReportTime,
 		ReportDate: ps.ReportDate,
-		Photo:      ps.Photo,
+		Image:      ps.Image,
 		Status:     ps.Status,
 		Lamp1:      ps.Lamp1,
 		Lamp2:      ps.Lamp2,
@@ -153,7 +153,7 @@ func CreateReport(db *gorm.DB, ps *ReportsParams) (map[string]interface{}, error
 		"room_label":    report.RoomLabel,
 		"report_time":   report.ReportTime,
 		"report_date":   report.ReportDate,
-		"photo":         report.Photo,
+		"iamge":         report.Image,
 		"status":        report.Status,
 		"lamp_1_status": report.Lamp1,
 		"lamp_2_status": report.Lamp2,
@@ -184,7 +184,7 @@ func UpdatedReport(db *gorm.DB, ps *ReportsParams) (map[string]interface{}, erro
 	report.RoomLabel = ps.RoomLabel
 	report.ReportTime = ps.ReportTime
 	report.ReportDate = ps.ReportDate
-	report.Photo = ps.Photo
+	report.Image = ps.Image
 	report.Status = ps.Status
 	report.Lamp1 = ps.Lamp1
 	report.Lamp2 = ps.Lamp2
@@ -208,7 +208,7 @@ func UpdatedReport(db *gorm.DB, ps *ReportsParams) (map[string]interface{}, erro
 		"room_label":    report.RoomLabel,
 		"report_time":   report.ReportTime,
 		"report_date":   report.ReportDate,
-		"photo":         report.Photo,
+		"image":         report.Image,
 		"status":        report.Status,
 		"lamp_1_status": report.Lamp1,
 		"lamp_2_status": report.Lamp2,
