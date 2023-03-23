@@ -48,11 +48,12 @@ type ErrParams struct {
 
 // UrlParams define filter component
 type UrlParams struct {
-	Status  string `json:"status"`
-	Slug    string `json:"slug"`
-	Page    int64  `json:"pages"`
-	ID      int64  `json:"id"`
-	OrderNo string `json:"order_no"`
+	Status    string `json:"status"`
+	Slug      string `json:"slug"`
+	Page      int64  `json:"pages"`
+	ID        int64  `json:"id"`
+	OrderNo   string `json:"order_no"`
+	DataImage string `json:"data_image"`
 }
 
 // QueryStringParams defines struct for r.Query()
@@ -73,6 +74,8 @@ type QueryStringParams struct {
 	CreateAt  string
 	OrderBy   string
 	SortBy    string
+	Uuid      string
+	Channel   string
 }
 
 type PaginateParams struct {
@@ -186,6 +189,8 @@ func ParsingQueryString(query interface{}) *QueryStringParams {
 		updatedAt = ""
 		orderBy   = ""
 		sortBy    = ""
+		uuid      = ""
+		channel   = ""
 	)
 
 	switch v := query.(type) {
@@ -207,11 +212,14 @@ func ParsingQueryString(query interface{}) *QueryStringParams {
 		sortBy = v.Get("sort_by")
 		createdAt = v.Get("created_at")
 		updatedAt = v.Get("updated_at")
+		uuid = v.Get("uuid")
+		channel = v.Get("channel")
 
 	case string:
 		ID, _ = strconv.Atoi(v)
 		Slug = v
-
+		uuid = v
+		channel = v
 	}
 
 	return &QueryStringParams{
@@ -231,6 +239,8 @@ func ParsingQueryString(query interface{}) *QueryStringParams {
 		SortBy:    sortBy,
 		CreateAt:  createdAt,
 		UpdateAt:  updatedAt,
+		Uuid:      uuid,
+		Channel:   channel,
 	}
 }
 
@@ -492,4 +502,16 @@ func UTCTime(t *time.Time) time.Time {
 // LocalTime minus 7 hr from utc + 00
 func LocalTime(t *time.Time) time.Time {
 	return t.Add(time.Duration(-7) * time.Hour)
+}
+
+var myClient = &http.Client{Timeout: 10 * time.Second}
+
+func getJson(url string, target interface{}) error {
+	r, err := myClient.Get(url)
+	if err != nil {
+		return err
+	}
+	defer r.Body.Close()
+
+	return json.NewDecoder(r.Body).Decode(target)
 }

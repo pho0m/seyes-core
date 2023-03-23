@@ -3,10 +3,14 @@ package helper
 import (
 	"bytes"
 	"fmt"
+	"image"
+	"image/jpeg"
 	"io"
+	"log"
 	"mime/multipart"
 	"net/http"
 	"path"
+	"strconv"
 	"strings"
 
 	"github.com/gofrs/uuid"
@@ -108,4 +112,18 @@ func WriteBodyInImageFile(writer *multipart.Writer, image multipart.File) (err e
 	}
 	image.Close()
 	return
+}
+
+func WriteImageToRespone(w http.ResponseWriter, img *image.Image) {
+
+	buffer := new(bytes.Buffer)
+	if err := jpeg.Encode(buffer, *img, nil); err != nil {
+		log.Println("unable to encode image.")
+	}
+
+	w.Header().Set("Content-Type", "image/jpeg")
+	w.Header().Set("Content-Length", strconv.Itoa(len(buffer.Bytes())))
+	if _, err := w.Write(buffer.Bytes()); err != nil {
+		log.Println("unable to write image.")
+	}
 }
