@@ -87,7 +87,7 @@ func WriteBodyInMessage(writer *multipart.Writer, message string) (err error) {
 
 func WriteBodyInImageFile(writer *multipart.Writer, image multipart.File) (err error) {
 
-	mediaName := "media_dev/" //os.Getenv("STORAGE_MEDIA_NAME")
+	mediaName := "media/" //os.Getenv("STORAGE_MEDIA_NAME")
 	padding, err := GeneratePadding()
 
 	if err != nil {
