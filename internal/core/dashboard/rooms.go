@@ -23,6 +23,7 @@ type RoomParams struct {
 	ID             int64  `json:"id"`
 	Label          string `json:"label"`
 	CamURL         string `json:"cam_url"`
+	UuidCam        string `json:"uuid_cam"`
 	Status         string `json:"status"`
 	Active         bool   `json:"active"`
 	MqttTopicLamp1 string `json:"mqtt_topic_lamp_1"`
@@ -92,6 +93,7 @@ func GetRoom(db *gorm.DB, ps *helper.UrlParams) (map[string]interface{}, error) 
 		"id":                room.ID,
 		"label":             room.Label,
 		"cam_url":           room.CamURL,
+		"uuid_cam":          room.UudiCam,
 		"status":            room.Status,
 		"active":            room.Active,
 		"mqtt_topic_lamp_1": room.MqttTopicLamp1,
@@ -112,6 +114,7 @@ func CreateRoom(db *gorm.DB, ps *RoomParams) (map[string]interface{}, error) {
 	room := &mo.Room{
 		Label:          ps.Label,
 		CamURL:         ps.CamURL,
+		UudiCam:        ps.UuidCam,
 		Status:         ps.Status,
 		Active:         ps.Active,
 		MqttTopicLamp1: ps.MqttTopicLamp1,
@@ -132,6 +135,7 @@ func CreateRoom(db *gorm.DB, ps *RoomParams) (map[string]interface{}, error) {
 		"id":                room.ID,
 		"label":             room.Label,
 		"cam_url":           room.CamURL,
+		"uuid_cam":          room.UudiCam,
 		"status":            room.Status,
 		"active":            room.Active,
 		"mqtt_topic_lamp_1": room.MqttTopicLamp1,
@@ -160,6 +164,7 @@ func UpdatedRoom(db *gorm.DB, ps *RoomParams) (map[string]interface{}, error) {
 	room.CamURL = ps.CamURL
 	room.Status = ps.Status
 	room.Active = ps.Active
+	room.UudiCam = ps.UuidCam
 
 	room.MqttTopicLamp1 = ps.MqttTopicLamp1
 	room.MqttTopicLamp2 = ps.MqttTopicLamp2
@@ -178,6 +183,7 @@ func UpdatedRoom(db *gorm.DB, ps *RoomParams) (map[string]interface{}, error) {
 		"id":                room.ID,
 		"label":             room.Label,
 		"cam_url":           room.CamURL,
+		"uuid_cam":          room.UudiCam,
 		"status":            room.Status,
 		"active":            room.Active,
 		"mqtt_topic_lamp_1": room.MqttTopicLamp1,

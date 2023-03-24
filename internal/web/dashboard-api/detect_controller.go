@@ -6,9 +6,11 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	core "seyes-core/internal/core/dashboard"
 	"seyes-core/internal/helper"
 	"seyes-core/internal/service"
 	"seyes-core/internal/web/common"
+	"strconv"
 
 	"github.com/go-chi/chi"
 	"gorm.io/gorm"
@@ -47,28 +49,40 @@ type DetectionParams struct {
 func (h *DetectController) GetDetectHandler(w http.ResponseWriter, r *http.Request) {
 	// ctx := r.Context().Value("user_info").(*auth.UserInfo)
 	const urlSeyesCam = "http://202.44.35.76:9093/image"
+	ps := helper.ParsingQueryString(chi.URLParam(r, "id"))
 
-	uuid := chi.URLParam(r, "uuid")
-	channel := chi.URLParam(r, "channel")
+	resRoom, err := core.GetRoom(h.db, &helper.UrlParams{
+		ID: ps.ID,
+	})
 
-	resFromSCAM, err := http.Get(urlSeyesCam + "/" + uuid + "/channel" + "/" + channel) //+ "/" + ps.Uuid + "/channel" + ps.Channel
 	if err != nil {
-		helper.ReturnError(w, err, "error get all Detect", http.StatusBadRequest)
+		helper.ReturnError(w, err, "error get a room", http.StatusBadRequest)
+		return
+	}
+
+	rr, _ := json.Marshal(resRoom)
+
+	var room core.RoomParams
+	json.Unmarshal(rr, &room)
+
+	resFromSCAM, err := http.Get(urlSeyesCam + "/" + room.UuidCam + "/channel" + "/0") //+ "/" + ps.Uuid + "/channel" + ps.Channel
+	if err != nil {
+		helper.ReturnError(w, err, "error cannot get image form seyes cam", http.StatusBadRequest)
 		return
 	}
 
 	responseData, err := ioutil.ReadAll(resFromSCAM.Body)
 	if err != nil {
-		helper.ReturnError(w, err, "error get all Detect", http.StatusBadRequest)
+		helper.ReturnError(w, err, "error cannot read seyescam data", http.StatusBadRequest)
 		return
 	}
-	var responseObject DetectionParams
-	json.Unmarshal(responseData, &responseObject)
+	var ro DetectionParams
+	json.Unmarshal(responseData, &ro)
 
-	var jsonStr = []byte(`{"image":` + `"` + responseObject.ImageData + `"` + `}`)
+	var jsonStr = []byte(`{"image":` + `"` + ro.ImageData + `"` + `}`)
 	req, err := http.NewRequest("POST", "http://202.44.35.76:9094/detect", bytes.NewBuffer(jsonStr))
 	if err != nil {
-		helper.ReturnError(w, err, "error get all Detect", http.StatusBadRequest)
+		helper.ReturnError(w, err, "error Detection form seyes detection", http.StatusBadRequest)
 		return
 	}
 	req.Header.Set("Content-Type", "application/json")
@@ -76,7 +90,7 @@ func (h *DetectController) GetDetectHandler(w http.ResponseWriter, r *http.Reque
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		helper.ReturnError(w, err, "error get all Detect", http.StatusBadRequest)
+		helper.ReturnError(w, err, "error client do", http.StatusBadRequest)
 		return
 	}
 	defer resp.Body.Close()
@@ -84,87 +98,44 @@ func (h *DetectController) GetDetectHandler(w http.ResponseWriter, r *http.Reque
 	fmt.Println("response Status:", resp.Status)
 	fmt.Println("response Headers:", resp.Header)
 	body, _ := ioutil.ReadAll(resp.Body)
-	fmt.Println("response Body:", string(body))
 
-	json.Unmarshal(body, &responseObject)
+	json.Unmarshal(body, &ro)
 
-	// de, err := core.GetImageFromSeyesCam(&core.DetectionParams{ //detects, err :=
-	// 	Uuid:    uuid,
-	// 	Channel: channel,
+	personCount, _ := strconv.ParseInt(ro.PersonCount, 10, 64)
+	comCount, _ := strconv.ParseInt(ro.ConOnCount, 10, 64)
+	acc, _ := strconv.ParseFloat(ro.Accurency, 64)
+
+	resReports, err := core.CreateReport(h.db, &core.ReportsParams{
+		PersonCont: personCount,
+		ComOnCount: comCount,
+		Status:     "detected",
+		Image:      ro.ImageData,
+		Accurency:  acc,
+		RoomLabel:  room.Label,
+		ReportTime: ro.Time,
+		ReportDate: ro.Date,
+	})
+
+	if err != nil {
+		helper.ReturnError(w, err, "error create report", http.StatusBadRequest)
+		return
+	}
+
+	h.JSON(w, resReports)
+}
+
+// UpdateModelFileHandler endpoint for update a new model
+func (h *DetectController) UpdateModelFileHandler(w http.ResponseWriter, r *http.Request) {
+	// ps := helper.ParsingQueryString(chi.URLParam(r, "id"))
+
+	// res, err := core.GetDetect(h.db, &helper.UrlParams{
+	// 	ID: ps.ID,
 	// })
 
 	// if err != nil {
-	// helper.ReturnError(w, err, "error get all Detect", http.StatusBadRequest)
-	// return
+	// 	helper.ReturnError(w, err, "error get a Detect", http.StatusBadRequest)
+	// 	return
 	// }
 
-	h.JSON(w, responseObject)
+	h.JSON(w, "wip")
 }
-
-// // GetDetectHandler endpoint for get a Detect
-// func (h *DetectController) GetDetectHandler(w http.ResponseWriter, r *http.Request) {
-// 	ps := helper.ParsingQueryString(chi.URLParam(r, "id"))
-
-// 	res, err := core.GetDetect(h.db, &helper.UrlParams{
-// 		ID: ps.ID,
-// 	})
-
-// 	if err != nil {
-// 		helper.ReturnError(w, err, "error get a Detect", http.StatusBadRequest)
-// 		return
-// 	}
-
-// 	h.JSON(w, res)
-// }
-
-// // CreateDetectHandler endpoint for create a Detect
-// func (h *DetectController) CreateDetectHandler(w http.ResponseWriter, r *http.Request) {
-// 	var ps core.DetectParams
-
-// 	if err := json.NewDecoder(r.Body).Decode(&ps); err != nil {
-// 		helper.ReturnError(w, err, "error decode params", http.StatusBadRequest)
-// 		return
-// 	}
-// 	res, err := core.CreateDetect(h.db, &ps)
-
-// 	if err != nil {
-// 		helper.ReturnError(w, err, "error create a Detect", http.StatusBadRequest)
-// 		return
-// 	}
-
-// 	h.JSON(w, res)
-// }
-
-// // UpdateDetectHandler endpoint for update a Detect
-// func (h *DetectController) UpdateDetectHandler(w http.ResponseWriter, r *http.Request) {
-// 	ps := helper.ParsingQueryString(chi.URLParam(r, "id"))
-// 	var req core.DetectParams
-
-// 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-// 		helper.ReturnError(w, err, "error decode params", http.StatusBadRequest)
-// 		return
-// 	}
-// 	req.ID = ps.ID
-// 	res, err := core.UpdatedDetect(h.db, &req)
-
-// 	if err != nil {
-// 		helper.ReturnError(w, err, "error update a Detect", http.StatusBadRequest)
-// 		return
-// 	}
-
-// 	h.JSON(w, res)
-// }
-
-// // DeleteDetectHandler endpoint for delete a Detect
-// func (h *DetectController) DeleteDetectHandler(w http.ResponseWriter, r *http.Request) {
-// 	ps := helper.ParsingQueryString(chi.URLParam(r, "id"))
-
-// 	err := core.DeletedDetect(h.db, ps.ID)
-
-// 	if err != nil {
-// 		helper.ReturnError(w, err, "error delete Detect", http.StatusBadRequest)
-// 		return
-// 	}
-
-// 	h.JSON(w, "ok")
-// }

@@ -41,7 +41,7 @@ func SetupRoutes(sc *service.Container, r chi.Router) {
 		})
 
 		r.Route("/rooms", func(r chi.Router) {
-			roc := NewDetectController(sc)
+			roc := NewRoomController(sc)
 
 			r.Get("/", roc.IndexRoomHandler)
 			r.Get("/{id}", roc.GetRoomHandler)
@@ -63,8 +63,8 @@ func SetupRoutes(sc *service.Container, r chi.Router) {
 		r.Route("/detect", func(r chi.Router) {
 			dtc := NewDetectController(sc)
 
-			r.Get("/{uuid}/channel/{channel}", dtc.GetDetectHandler)
-			r.Post("/new", dtc.CreateRoomHandler)
+			r.Get("/{id}", dtc.GetDetectHandler)
+			r.Post("/new", dtc.UpdateModelFileHandler)
 		})
 	})
 

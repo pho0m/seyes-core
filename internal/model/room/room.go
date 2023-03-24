@@ -10,6 +10,7 @@ type Room struct {
 	m.Model
 	Label      string        `json:"label"`
 	CamURL     string        `json:"cam_url"`
+	UudiCam    string        `json:"uuid_cam"`
 	Status     string        `json:"status"`
 	Active     bool          `json:"active"`
 	ScheduleID sql.NullInt64 `json:"schedule_id"`

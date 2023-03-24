@@ -16,13 +16,13 @@ import (
 type RoomController struct {
 	db *gorm.DB
 	common.BaseRender
-	// auth *auth.Authenticator
 	sc *service.Container
+	// auth *auth.Authenticator
 }
 
 // NewRoomController creates a new WebHandler
-func NewRoomController(sc *service.Container) *DetectController {
-	return &DetectController{
+func NewRoomController(sc *service.Container) *RoomController {
+	return &RoomController{
 		db: sc.DB,
 		sc: sc,
 		// auth: sc.Auth.(*auth.Authenticator),
@@ -30,7 +30,7 @@ func NewRoomController(sc *service.Container) *DetectController {
 }
 
 // IndexRoomHandler endpoint for get all room
-func (h *DetectController) IndexRoomHandler(w http.ResponseWriter, r *http.Request) {
+func (h *RoomController) IndexRoomHandler(w http.ResponseWriter, r *http.Request) {
 	// ctx := r.Context().Value("user_info").(*auth.UserInfo)
 
 	ps := helper.ParsingQueryString(r.URL.Query())
@@ -51,7 +51,7 @@ func (h *DetectController) IndexRoomHandler(w http.ResponseWriter, r *http.Reque
 }
 
 // GetRoomHandler endpoint for get a room
-func (h *DetectController) GetRoomHandler(w http.ResponseWriter, r *http.Request) {
+func (h *RoomController) GetRoomHandler(w http.ResponseWriter, r *http.Request) {
 	ps := helper.ParsingQueryString(chi.URLParam(r, "id"))
 
 	res, err := core.GetRoom(h.db, &helper.UrlParams{
@@ -67,7 +67,7 @@ func (h *DetectController) GetRoomHandler(w http.ResponseWriter, r *http.Request
 }
 
 // CreateRoomHandler endpoint for create a room
-func (h *DetectController) CreateRoomHandler(w http.ResponseWriter, r *http.Request) {
+func (h *RoomController) CreateRoomHandler(w http.ResponseWriter, r *http.Request) {
 	var ps core.RoomParams
 
 	if err := json.NewDecoder(r.Body).Decode(&ps); err != nil {
@@ -85,7 +85,7 @@ func (h *DetectController) CreateRoomHandler(w http.ResponseWriter, r *http.Requ
 }
 
 // UpdateRoomHandler endpoint for update a room
-func (h *DetectController) UpdateRoomHandler(w http.ResponseWriter, r *http.Request) {
+func (h *RoomController) UpdateRoomHandler(w http.ResponseWriter, r *http.Request) {
 	ps := helper.ParsingQueryString(chi.URLParam(r, "id"))
 	var req core.RoomParams
 
@@ -105,7 +105,7 @@ func (h *DetectController) UpdateRoomHandler(w http.ResponseWriter, r *http.Requ
 }
 
 // DeleteRoomHandler endpoint for delete a room
-func (h *DetectController) DeleteRoomHandler(w http.ResponseWriter, r *http.Request) {
+func (h *RoomController) DeleteRoomHandler(w http.ResponseWriter, r *http.Request) {
 	ps := helper.ParsingQueryString(chi.URLParam(r, "id"))
 
 	err := core.DeletedRoom(h.db, ps.ID)
