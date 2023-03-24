@@ -11,6 +11,8 @@ import (
 
 	"time"
 
+	"github.com/robfig/cron/v3"
+	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 )
 
@@ -38,10 +40,24 @@ func main() {
 	}
 	initSetting(sc.DB)
 
-	fmt.Println("Starting seyes http server...")
-	fmt.Println("Listening in port:" + appPort)
+	logrus.Info("Starting seyes http server...")
+	logrus.Info("Listening in port:" + appPort)
+
+	cronAutomateDetection(sc.DB)
 
 	s.Start(sc)
+}
+
+func cronAutomateDetection(db *gorm.DB) {
+	c := cron.New()
+	c.AddFunc("@every 5s", func() { logrus.Info("[Job 1]Every minute job\n") })
+
+	// Start cron with one scheduled job
+	logrus.Info("Start cron !")
+	c.Start()
+	time.Sleep(2 * time.Second)
+
+	logrus.Info("Add new job to a running cron")
 }
 
 func sanityChecks() error {

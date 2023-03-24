@@ -8,13 +8,13 @@ import (
 type Report struct {
 	m.Model
 
-	PersonCont int64   `json:"person_count"`
-	ComOnCount int64   `json:"com_on_count"`
-	Accurency  float64 `json:"accurency"`
-	RoomLabel  string  `json:"room_label"`
-	ReportTime string  `json:"report_time"`
-	ReportDate string  `json:"report_date"`
-	Image      string  `json:"image"`
+	PersonCont int64  `json:"person_count"`
+	ComOnCount int64  `json:"com_on_count"`
+	Accurency  string `json:"accurency"`
+	RoomLabel  string `json:"room_label"`
+	ReportTime string `json:"report_time"`
+	ReportDate string `json:"report_date"`
+	Image      string `json:"image"`
 
 	Status string `json:"status"`
 	Lamp1  string `json:"lamp_1_status"`

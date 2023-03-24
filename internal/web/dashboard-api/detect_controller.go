@@ -103,14 +103,13 @@ func (h *DetectController) GetDetectHandler(w http.ResponseWriter, r *http.Reque
 
 	personCount, _ := strconv.ParseInt(ro.PersonCount, 10, 64)
 	comCount, _ := strconv.ParseInt(ro.ConOnCount, 10, 64)
-	acc, _ := strconv.ParseFloat(ro.Accurency, 64)
 
 	resReports, err := core.CreateReport(h.db, &core.ReportsParams{
 		PersonCont: personCount,
 		ComOnCount: comCount,
 		Status:     "detected",
 		Image:      ro.ImageData,
-		Accurency:  acc,
+		Accurency:  ro.Accurency,
 		RoomLabel:  room.Label,
 		ReportTime: ro.Time,
 		ReportDate: ro.Date,

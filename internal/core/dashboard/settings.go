@@ -11,6 +11,7 @@ import (
 // SettingsParams define params for create room
 type SettingsParams struct {
 	ID                    int64  `json:"id"`
+	Active                bool   `json:"active"`
 	AiModelData           string `json:"model_data"`
 	CronjobTime           string `json:"cronjob_time"`
 	LineNotifyAccessToken string `json:"notify_access_token"`
@@ -31,6 +32,7 @@ func GetSetting(db *gorm.DB, ps *helper.UrlParams) (map[string]interface{}, erro
 
 	res := map[string]interface{}{
 		"id":                  setting.ID,
+		"active":              setting.Active,
 		"model_data":          setting.AiModelData,
 		"cronjob_time":        setting.CronjobTime,
 		"notify_access_token": setting.LineNotifyAccessToken,
@@ -47,6 +49,7 @@ func GetSetting(db *gorm.DB, ps *helper.UrlParams) (map[string]interface{}, erro
 // CreateSettings create a room
 func CreateSettings(db *gorm.DB, ps *SettingsParams) (map[string]interface{}, error) {
 	setting := &mo.Setting{
+		Active:                ps.Active,
 		AiModelData:           ps.AiModelData,
 		CronjobTime:           ps.CronjobTime,
 		LineNotifyAccessToken: ps.LineNotifyAccessToken,
@@ -62,6 +65,7 @@ func CreateSettings(db *gorm.DB, ps *SettingsParams) (map[string]interface{}, er
 
 	res := map[string]interface{}{
 		"id":                  setting.ID,
+		"active":              setting.Active,
 		"model_data":          setting.AiModelData,
 		"cronjob_time":        setting.CronjobTime,
 		"notify_access_token": setting.LineNotifyAccessToken,
@@ -84,6 +88,7 @@ func UpdatedSettings(db *gorm.DB, ps *SettingsParams) (map[string]interface{}, e
 		return nil, err
 	}
 
+	setting.Active = ps.Active
 	setting.AiModelData = ps.AiModelData
 	setting.CronjobTime = ps.CronjobTime
 	setting.LineNotifyAccessToken = ps.LineNotifyAccessToken
@@ -98,6 +103,7 @@ func UpdatedSettings(db *gorm.DB, ps *SettingsParams) (map[string]interface{}, e
 
 	res := map[string]interface{}{
 		"id":                  setting.ID,
+		"active":              setting.Active,
 		"model_data":          setting.AiModelData,
 		"cronjob_time":        setting.CronjobTime,
 		"notify_access_token": setting.LineNotifyAccessToken,
