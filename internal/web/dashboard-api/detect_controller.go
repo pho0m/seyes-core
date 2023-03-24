@@ -3,7 +3,6 @@ package dashboardAPI
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	core "seyes-core/internal/core/dashboard"
@@ -13,6 +12,7 @@ import (
 	"strconv"
 
 	"github.com/go-chi/chi"
+	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 )
 
@@ -95,8 +95,8 @@ func (h *DetectController) GetDetectHandler(w http.ResponseWriter, r *http.Reque
 	}
 	defer resp.Body.Close()
 
-	fmt.Println("response Status:", resp.Status)
-	fmt.Println("response Headers:", resp.Header)
+	logrus.Info("response Status:", resp.Status)
+	logrus.Info("response Headers:", resp.Header)
 	body, _ := ioutil.ReadAll(resp.Body)
 
 	json.Unmarshal(body, &ro)

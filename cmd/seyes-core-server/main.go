@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	"os"
 	core "seyes-core/internal/core/dashboard"
 	model "seyes-core/internal/model/room"
@@ -77,7 +76,7 @@ func loadEnv() error {
 		return errors.New("configuration_not_found")
 	}
 
-	fmt.Println("app env:", appEnv)
+	logrus.Info("app env:", appEnv)
 
 	return nil
 }
