@@ -18,6 +18,18 @@ type ReportsFilter struct {
 	SortBy  string   `json:"sort_by"`
 }
 
+type DetectionParams struct {
+	Uuid        string `json:"id"`
+	Channel     string `json:"channel"`
+	ImageData   string `json:"image"`
+	Accurency   string `json:"accuracy"`
+	ConOnCount  string `json:"com_on_count"`
+	Date        string `json:"date"`
+	PersonCount string `json:"person_count"`
+	Status      string `json:"status_detec"`
+	Time        string `json:"time"`
+}
+
 // ReportsParams define params for create Reports
 type ReportsParams struct {
 	ID         int64  `json:"id"`

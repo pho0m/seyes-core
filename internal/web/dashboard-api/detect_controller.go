@@ -34,18 +34,6 @@ func NewDetectController(sc *service.Container) *DetectController {
 	}
 }
 
-type DetectionParams struct {
-	Uuid        string `json:"id"`
-	Channel     string `json:"channel"`
-	ImageData   string `json:"image"`
-	Accurency   string `json:"accuracy"`
-	ConOnCount  string `json:"com_on_count"`
-	Date        string `json:"date"`
-	PersonCount string `json:"person_count"`
-	Status      string `json:"status_detec"`
-	Time        string `json:"time"`
-}
-
 // GetDetectHandler endpoint for get all Detect
 func (h *DetectController) GetDetectHandler(w http.ResponseWriter, r *http.Request) {
 	// ctx := r.Context().Value("user_info").(*auth.UserInfo)
@@ -76,7 +64,7 @@ func (h *DetectController) GetDetectHandler(w http.ResponseWriter, r *http.Reque
 		helper.ReturnError(w, err, "error cannot read seyescam data", http.StatusBadRequest)
 		return
 	}
-	var dp DetectionParams
+	var dp core.DetectionParams
 	json.Unmarshal(responseData, &dp)
 
 	var jsonStr = []byte(`{"image":` + `"` + dp.ImageData + `"` + `}`)
@@ -100,8 +88,6 @@ func (h *DetectController) GetDetectHandler(w http.ResponseWriter, r *http.Reque
 
 	personCount, _ := strconv.Atoi(dp.PersonCount)
 	comCount, _ := strconv.Atoi(dp.ConOnCount)
-
-	// spew.Dump(dp)
 
 	resReports, err := core.CreateReport(h.db, &core.ReportsParams{
 		PersonCont: int64(personCount),

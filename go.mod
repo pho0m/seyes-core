@@ -11,8 +11,6 @@ require (
 	gorm.io/gorm v1.20.8
 )
 
-require github.com/davecgh/go-spew v1.1.1
-
 require (
 	github.com/robfig/cron/v3 v3.0.0 // indirect
 	github.com/sirupsen/logrus v1.9.0 // indirect
