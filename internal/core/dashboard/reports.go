@@ -60,7 +60,7 @@ func GetAllReports(db *gorm.DB, filter *ReportsFilter) (map[string]interface{}, 
 	dbx := db.Model(&mo.Report{})
 	pg := helper.FormatWebPaginate(dbx, filter.Page)
 
-	if err := pg.DB.Find(&reports).Error; err != nil {
+	if err := pg.DB.Order("id desc").Find(&reports).Error; err != nil {
 		return nil, err
 	}
 
