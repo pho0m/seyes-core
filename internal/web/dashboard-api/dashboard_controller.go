@@ -68,3 +68,39 @@ func (c *DashboardController) Notify(w http.ResponseWriter, r *http.Request) {
 
 	c.JSON(w, res)
 }
+
+// NotifyFromSeyesApp endpoint for notify in line FIXME
+func (c *DashboardController) NotifyFromSeyesApp(w http.ResponseWriter, r *http.Request) {
+
+	r.Body = http.MaxBytesReader(w, r.Body, 4*1024*1024) // 4 Mb
+	file, handler, err := r.FormFile("image")
+
+	if err != nil {
+		c.Error(w, err, "error upload image", http.StatusBadRequest)
+		return
+	}
+
+	ps := helper.ParsingQueryUpload(r.Form)
+
+	defer file.Close()
+	u := helper.ParsingUploadFileParams(file, handler)
+
+	data := noti.NotifyParam{
+		Image:     u.File,
+		ID:        ps.ID,
+		Person:    ps.Person,
+		ComOn:     ps.ComOn,
+		UploadAt:  ps.UploadAt,
+		Time:      ps.Time,
+		Accurency: ps.Accurency,
+	}
+
+	res, err := noti.SendToLineNotify(&data)
+
+	if err != nil {
+		c.Error(w, err, "send to error", http.StatusInternalServerError)
+		return
+	}
+
+	c.JSON(w, res)
+}

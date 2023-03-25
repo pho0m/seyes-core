@@ -120,6 +120,7 @@ func GetReport(db *gorm.DB, ps *helper.UrlParams) (map[string]interface{}, error
 
 // CreateReport create a Reports
 func CreateReport(db *gorm.DB, ps *ReportsParams) (map[string]interface{}, error) {
+
 	report := &mo.Report{
 		PersonCont: ps.PersonCont,
 		ComOnCount: ps.ComOnCount,
@@ -152,7 +153,7 @@ func CreateReport(db *gorm.DB, ps *ReportsParams) (map[string]interface{}, error
 		"room_label":    report.RoomLabel,
 		"report_time":   report.ReportTime,
 		"report_date":   report.ReportDate,
-		"iamge":         report.Image,
+		"image":         report.Image,
 		"status":        report.Status,
 		"lamp_1_status": report.Lamp1,
 		"lamp_2_status": report.Lamp2,

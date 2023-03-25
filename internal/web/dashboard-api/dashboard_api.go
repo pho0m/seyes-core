@@ -31,7 +31,7 @@ func SetupRoutes(sc *service.Container, r chi.Router) {
 		// r.Use(a.MiddlewareAnalytic)
 
 		r.Get("/", c.HealthCheck)
-		r.Post("/notify", c.Notify)
+		r.Post("/notify", c.NotifyFromSeyesApp)
 		// r.Get("/models/default", c.ReadModelFile)
 		r.Route("/settings", func(r chi.Router) {
 			room := NewSettingsController(sc)

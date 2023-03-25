@@ -1,9 +1,11 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"os"
 	core "seyes-core/internal/core/dashboard"
+	"seyes-core/internal/helper"
 	model "seyes-core/internal/model/room"
 	"seyes-core/internal/service"
 	"seyes-core/internal/web"
@@ -42,21 +44,40 @@ func main() {
 	logrus.Info("Starting seyes http server...")
 	logrus.Info("Listening in port:" + appPort)
 
-	cronAutomateDetection(sc.DB)
+	// cronAutomateDetection(sc.DB)
 
 	s.Start(sc)
 }
 
 func cronAutomateDetection(db *gorm.DB) {
-	c := cron.New()
-	c.AddFunc("@every 5s", func() { logrus.Info("[Job 1]Every minute job\n") })
 
+	var cornTime = ""
+
+	cornTime = os.Getenv("DEFAULT_CRONJOB_TIME")
+	c := cron.New()
+
+	sdata, err := core.GetSetting(db, &helper.UrlParams{ID: 1})
+
+	if err != nil {
+		panic(err)
+	}
+	sm, _ := json.Marshal(sdata)
+	var setting core.SettingsParams
+	json.Unmarshal(sm, &setting)
+
+	cornTime = setting.CronjobTime
+
+	c.AddFunc("@every "+cornTime+"s", func() {
+
+		logrus.Info("[Job] Now Every " + cornTime + " job")
+
+	})
+	logrus.Print(cornTime)
 	// Start cron with one scheduled job
 	logrus.Info("Start cron !")
-	c.Start()
 	time.Sleep(2 * time.Second)
 
-	logrus.Info("Add new job to a running cron")
+	c.Start()
 }
 
 func sanityChecks() error {
