@@ -41,6 +41,7 @@ func GetSetting(db *gorm.DB, ps *helper.UrlParams) (map[string]interface{}, erro
 		"mqtt_username":       setting.MqttUserName,
 		"mqtt_password":       setting.MqttPassword,
 		"mqtt_port":           setting.MqttPort,
+		"mqtt_client_name":    setting.MqttClientName,
 	}
 
 	return res, nil
@@ -57,6 +58,7 @@ func CreateSettings(db *gorm.DB, ps *SettingsParams) (map[string]interface{}, er
 		MqttUserName:          ps.MqttUserName,
 		MqttPassword:          ps.MqttPassword,
 		MqttPort:              ps.MqttPort,
+		MqttClientName:        ps.MqttClientName,
 	}
 
 	if err := db.Create(&setting).Error; err != nil {
@@ -74,6 +76,7 @@ func CreateSettings(db *gorm.DB, ps *SettingsParams) (map[string]interface{}, er
 		"mqtt_username":       setting.MqttUserName,
 		"mqtt_password":       setting.MqttPassword,
 		"mqtt_port":           setting.MqttPort,
+		"mqtt_client_name":    setting.MqttClientName,
 	}
 
 	return res, nil
@@ -96,6 +99,7 @@ func UpdatedSettings(db *gorm.DB, ps *SettingsParams) (map[string]interface{}, e
 	setting.MqttUserName = ps.MqttUserName
 	setting.MqttPassword = ps.MqttPassword
 	setting.MqttPort = ps.MqttPort
+	setting.MqttClientName = ps.MqttClientName
 
 	if err := db.Save(&setting).Error; err != nil {
 		return nil, err
@@ -112,6 +116,7 @@ func UpdatedSettings(db *gorm.DB, ps *SettingsParams) (map[string]interface{}, e
 		"mqtt_username":       setting.MqttUserName,
 		"mqtt_password":       setting.MqttPassword,
 		"mqtt_port":           setting.MqttPort,
+		"mqtt_client_name":    setting.MqttClientName,
 	}
 
 	return res, nil
