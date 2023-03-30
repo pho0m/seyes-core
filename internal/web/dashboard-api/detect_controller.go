@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"os"
 	core "seyes-core/internal/core/dashboard"
 	noti "seyes-core/internal/core/notifications"
 
@@ -37,7 +38,7 @@ func NewDetectController(sc *service.Container) *DetectController {
 // GetDetectHandler endpoint for get all Detect
 func (h *DetectController) GetDetectHandler(w http.ResponseWriter, r *http.Request) {
 	// ctx := r.Context().Value("user_info").(*auth.UserInfo)
-	const urlSeyesCam = "http://202.44.35.76:9093/image"
+	var urlSeyesCam = os.Getenv("SEYES_CAM_URL") + "/image"
 	ps := helper.ParsingQueryString(chi.URLParam(r, "id"))
 
 	resRoom, err := core.GetRoom(h.db, &helper.UrlParams{
@@ -68,7 +69,7 @@ func (h *DetectController) GetDetectHandler(w http.ResponseWriter, r *http.Reque
 	json.Unmarshal(responseData, &dp)
 
 	var jsonStr = []byte(`{"image":` + `"` + dp.ImageData + `"` + `}`)
-	req, err := http.NewRequest("POST", "http://202.44.35.76:9094/detect", bytes.NewBuffer(jsonStr))
+	req, err := http.NewRequest("POST", os.Getenv("SEYES_DETECT_URL")+"/detect", bytes.NewBuffer(jsonStr))
 	if err != nil {
 		helper.ReturnError(w, err, "error Detection form seyes detection", http.StatusBadRequest)
 		return
