@@ -72,7 +72,7 @@ func cronAutomateDetection(db *gorm.DB) {
 
 		logrus.Info("Room 702 Snap !")
 
-		const urlSeyesCam = "http://202.44.35.76:9093/image"
+		var urlSeyesCam = os.Getenv("SEYES_CAM_URL") + "/image"
 		resRoom, err := core.GetRoom(db, &helper.UrlParams{
 			ID: 1,
 		})
@@ -98,7 +98,7 @@ func cronAutomateDetection(db *gorm.DB) {
 		json.Unmarshal(responseData, &dp)
 
 		var jsonStr = []byte(`{"image":` + `"` + dp.ImageData + `"` + `}`)
-		req, err := http.NewRequest("POST", "http://202.44.35.76:9094/detect", bytes.NewBuffer(jsonStr))
+		req, err := http.NewRequest("POST", os.Getenv("SEYES_DETECT_URL")+"/detect", bytes.NewBuffer(jsonStr))
 		if err != nil {
 			return
 		}
