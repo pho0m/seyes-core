@@ -50,7 +50,7 @@ func main() {
 	logrus.Info("Starting seyes http server...")
 	logrus.Info("Listening in port:" + appPort)
 
-	// cronAutomateDetection(sc.DB)
+	cronAutomateDetection(sc.DB) //FIXME
 
 	s.Start(sc)
 }
@@ -68,10 +68,9 @@ func cronAutomateDetection(db *gorm.DB) {
 
 	cornTime := setting.CronjobTime
 
-	c.AddFunc("@every "+"30"+"s", func() {
+	c.AddFunc("@every "+"5"+"m", func() {
 
-		logrus.Info("[Job] Now Every " + "10" + " job")
-		logrus.Info("Room 702 Automate !")
+		logrus.Info("Room 702 Snap !")
 
 		const urlSeyesCam = "http://202.44.35.76:9093/image"
 		resRoom, err := core.GetRoom(db, &helper.UrlParams{
@@ -153,87 +152,6 @@ func cronAutomateDetection(db *gorm.DB) {
 			return
 		}
 
-		logrus.Info("[Job] Now Every " + "15" + " job")
-		logrus.Info("Room 709 Automate !")
-
-		resRoom2, err := core.GetRoom(db, &helper.UrlParams{
-			ID: 2,
-		})
-
-		if err != nil {
-			return
-		}
-
-		rr2, _ := json.Marshal(resRoom2)
-		var room2 core.RoomParams
-		json.Unmarshal(rr2, &room2)
-
-		resFromSCAM2, err := http.Get(urlSeyesCam + "/" + room2.UuidCam + "/channel" + "/0") //+ "/" + ps.Uuid + "/channel" + ps.Channel
-		if err != nil {
-			return
-		}
-
-		responseData2, err := ioutil.ReadAll(resFromSCAM2.Body)
-		if err != nil {
-			return
-		}
-		var dp2 core.DetectionParams
-		json.Unmarshal(responseData2, &dp2)
-
-		var jsonStr2 = []byte(`{"image":` + `"` + dp2.ImageData + `"` + `}`)
-		req2, err := http.NewRequest("POST", "http://202.44.35.76:9094/detect", bytes.NewBuffer(jsonStr2))
-		if err != nil {
-			return
-		}
-		req.Header.Set("Content-Type", "application/json")
-
-		client2 := &http.Client{}
-		resp2, err := client2.Do(req2)
-		if err != nil {
-			return
-		}
-		defer resp2.Body.Close()
-
-		body2, _ := ioutil.ReadAll(resp2.Body)
-		json.Unmarshal(body2, &dp2)
-
-		personCount2, _ := strconv.Atoi(dp2.PersonCount)
-		comCount2, _ := strconv.Atoi(dp2.ConOnCount)
-
-		resReports2, err := core.CreateReport(db, &core.ReportsParams{
-			PersonCont: int64(personCount2),
-			ComOnCount: int64(comCount2),
-			Status:     "detected",
-			Image:      dp.ImageData,
-			Accurency:  dp.Accurency,
-			RoomLabel:  room.Label,
-			ReportTime: dp.Time,
-			ReportDate: dp.Date,
-		})
-
-		if err != nil {
-			return
-		}
-
-		rreport2, _ := json.Marshal(resReports2)
-		var report2 core.ReportsParams
-		json.Unmarshal(rreport2, &report2)
-
-		notifyData2 := noti.NotifyParamV2{
-			Image:     report2.Image,
-			ID:        report2.ID,
-			Person:    strconv.Itoa(int(report2.PersonCont)),
-			ComOn:     strconv.Itoa(int(report2.ComOnCount)),
-			UploadAt:  report2.ReportDate,
-			Time:      report2.ReportTime,
-			Accurency: report2.Accurency,
-		}
-
-		err = noti.SendToLineNotifyV2(&notifyData2)
-
-		if err != nil {
-			return
-		}
 	})
 
 	logrus.Print(cornTime)
