@@ -110,12 +110,7 @@ func SendToLineNotifyV2(ps *NotifyParamV2) error {
 	path := filepath.Join("./storage", "/detected-"+ps.Uuid+".jpeg")
 	convertBase64ToFile(ps.Image, path)
 
-	// f, err := os.Create(path)
-	// if err == nil {
-	// 	return err
-	// }
-
-	f, err := os.Open("detected.jpeg")
+	f, err := os.Open("./storage" + "/detected-" + ps.Uuid + ".jpeg")
 	if err != nil {
 		return err
 	}
@@ -146,11 +141,6 @@ func SendToLineNotifyV2(ps *NotifyParamV2) error {
 		return err
 	}
 	defer response.Body.Close()
-
-	// res := ResponseNotify{
-	// 	Message:    "data have been send !",
-	// 	StatusCode: strconv.Itoa(int(response.StatusCode)),
-	// }
 
 	return nil
 }
