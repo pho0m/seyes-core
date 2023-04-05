@@ -50,7 +50,7 @@ func main() {
 	logrus.Info("Starting seyes http server...")
 	logrus.Info("Listening in port:" + appPort)
 
-	cronAutomateDetection(sc.DB) //FIXME
+	// cronAutomateDetection(sc.DB) //FIXME
 
 	s.Start(sc)
 }

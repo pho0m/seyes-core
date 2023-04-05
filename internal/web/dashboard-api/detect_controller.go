@@ -89,11 +89,16 @@ func (h *DetectController) GetDetectHandler(w http.ResponseWriter, r *http.Reque
 
 	personCount, _ := strconv.Atoi(dp.PersonCount)
 	comCount, _ := strconv.Atoi(dp.ConOnCount)
+	status := "undetected"
+
+	if dp.Accurency != "0%" {
+		status = "detected"
+	}
 
 	resReports, err := core.CreateReport(h.db, &core.ReportsParams{
 		PersonCont: int64(personCount),
 		ComOnCount: int64(comCount),
-		Status:     "detected",
+		Status:     status,
 		Image:      dp.ImageData,
 		Accurency:  dp.Accurency,
 		RoomLabel:  room.Label,
@@ -111,6 +116,7 @@ func (h *DetectController) GetDetectHandler(w http.ResponseWriter, r *http.Reque
 	json.Unmarshal(rreport, &report)
 
 	notifyData := noti.NotifyParamV2{
+		Uuid:      room.UuidCam,
 		Image:     report.Image,
 		ID:        report.ID,
 		Person:    strconv.Itoa(int(report.PersonCont)),
@@ -120,11 +126,13 @@ func (h *DetectController) GetDetectHandler(w http.ResponseWriter, r *http.Reque
 		Accurency: report.Accurency,
 	}
 
-	err = noti.SendToLineNotifyV2(&notifyData)
+	if notifyData.Accurency != "0%" {
+		err = noti.SendToLineNotifyV2(&notifyData)
 
-	if err != nil {
-		helper.ReturnError(w, err, "error sent notify", http.StatusBadRequest)
-		return
+		if err != nil {
+			helper.ReturnError(w, err, "error sent notify", http.StatusBadRequest)
+			return
+		}
 	}
 
 	h.JSON(w, notifyData)
@@ -132,16 +140,6 @@ func (h *DetectController) GetDetectHandler(w http.ResponseWriter, r *http.Reque
 
 // UpdateModelFileHandler endpoint for update a new model
 func (h *DetectController) UpdateModelFileHandler(w http.ResponseWriter, r *http.Request) {
-	// ps := helper.ParsingQueryString(chi.URLParam(r, "id"))
-
-	// res, err := core.GetDetect(h.db, &helper.UrlParams{
-	// 	ID: ps.ID,
-	// })
-
-	// if err != nil {
-	// 	helper.ReturnError(w, err, "error get a Detect", http.StatusBadRequest)
-	// 	return
-	// }
 
 	h.JSON(w, "wip")
 }

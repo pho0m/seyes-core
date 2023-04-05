@@ -60,6 +60,22 @@ func SetupRoutes(sc *service.Container, r chi.Router) {
 			r.Delete("/delete/{id}", rec.DeleteReportHandler)
 		})
 
+		r.Route("/analytics", func(r chi.Router) {
+			dtc := NewReportController(sc)
+
+			r.Get("/", dtc.AnalyticsReportsHandler)
+		})
+
+		r.Route("/users", func(r chi.Router) {
+			rec := NewUserController(sc)
+
+			r.Get("/", rec.IndexUserHandler)
+			r.Get("/{id}", rec.GetUserHandler)
+			r.Post("/new", rec.CreateUserHandler)
+			r.Put("/edit/{id}", rec.UpdateUserHandler)
+			r.Delete("/delete/{id}", rec.DeleteUserHandler)
+		})
+
 		r.Route("/detect", func(r chi.Router) {
 			dtc := NewDetectController(sc)
 

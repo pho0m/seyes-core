@@ -1,8 +1,11 @@
 package core
 
 import (
+	"fmt"
 	"seyes-core/internal/helper"
 	mo "seyes-core/internal/model/room"
+	"strconv"
+	"strings"
 	"time"
 
 	"gorm.io/gorm"
@@ -94,6 +97,65 @@ func GetAllReports(db *gorm.DB, filter *ReportsFilter) (map[string]interface{}, 
 		"page":        pg.Page,
 		"total_pages": pg.TotalPages,
 		"total_count": pg.TotalCount,
+	}, nil
+}
+
+// AnalyticsReports get all Reports product
+func AnalyticsReports(db *gorm.DB, filter *ReportsFilter) (map[string]interface{}, error) {
+	// var resPr []ReportsParams
+	var reports []mo.Report
+
+	dbx := db.Model(&mo.Report{})
+	pg := helper.FormatWebPaginate(dbx, filter.Page)
+
+	if err := pg.DB.Order("id desc").Find(&reports).Error; err != nil {
+		return nil, err
+	}
+
+	var sumPerson []int64
+	var sumComon []int64
+	var sumAccurency []string
+	var arr []string
+	for _, r := range reports {
+		sumPerson = append(sumPerson, r.PersonCont)
+		sumComon = append(sumComon, r.ComOnCount)
+
+		if r.Accurency == "0%" || r.Accurency == "" {
+			continue
+		} else {
+			sumAccurency = strings.Split(r.Accurency, "%")
+			arr = append(arr, sumAccurency...)
+		}
+	}
+
+	var removeEmpty []string
+	for _, str := range arr {
+		if str != "" {
+			removeEmpty = append(removeEmpty, str)
+		}
+	}
+
+	var idx = 0
+	var accFloat []float64
+
+	for _, e := range removeEmpty {
+		if s, err := strconv.ParseFloat(e, 64); err == nil {
+			fmt.Println(s)
+			accFloat = append(accFloat, s)
+			idx++
+		}
+	}
+
+	resPerson := helper.SumArr(sumPerson)
+	resComOn := helper.SumArr(sumComon)
+	sumAcc := helper.SumArrFloat(accFloat)
+
+	resAcc := (sumAcc / float64(idx))
+
+	return map[string]interface{}{
+		"comon_count":  resComOn,
+		"person_count": resPerson,
+		"accurency":    resAcc,
 	}, nil
 }
 

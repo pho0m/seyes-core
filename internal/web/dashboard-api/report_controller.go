@@ -30,6 +30,27 @@ func NewReportController(sc *service.Container) *ReportController {
 }
 
 // IndexReportHandler endpoint for get all Report
+func (h *ReportController) AnalyticsReportsHandler(w http.ResponseWriter, r *http.Request) {
+	// ctx := r.Context().Value("user_info").(*auth.UserInfo)
+
+	ps := helper.ParsingQueryString(r.URL.Query())
+
+	reports, err := core.AnalyticsReports(h.db, &core.ReportsFilter{
+		ID:      ps.ID,
+		Page:    ps.Page,
+		OrderBy: ps.OrderBy,
+		SortBy:  ps.SortBy,
+	})
+
+	if err != nil {
+		helper.ReturnError(w, err, "error get all AnalyticsReports Report", http.StatusBadRequest)
+		return
+	}
+
+	h.JSON(w, reports)
+}
+
+// IndexReportHandler endpoint for get all Report
 func (h *ReportController) IndexReportHandler(w http.ResponseWriter, r *http.Request) {
 	// ctx := r.Context().Value("user_info").(*auth.UserInfo)
 

@@ -515,3 +515,19 @@ func getJson(url string, target interface{}) error {
 
 	return json.NewDecoder(r.Body).Decode(target)
 }
+
+func SumArr(array []int64) int64 {
+	result := int64(0)
+	for _, v := range array {
+		result += v
+	}
+	return result
+}
+
+func SumArrFloat(array []float64) float64 {
+	result := float64(0)
+	for _, v := range array {
+		result += v
+	}
+	return result
+}

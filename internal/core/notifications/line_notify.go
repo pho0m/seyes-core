@@ -3,17 +3,16 @@ package core
 import (
 	"bytes"
 	"encoding/base64"
-	"image/gif"
 	"image/jpeg"
-	"image/png"
 	"mime/multipart"
 	"net/http"
 	"os"
+	"path/filepath"
 	"seyes-core/internal/helper"
 	"strconv"
 	"strings"
 
-	"github.com/sirupsen/logrus"
+	"github.com/davecgh/go-spew/spew"
 )
 
 const urlNotify = "https://notify-api.line.me/api/notify"
@@ -31,6 +30,7 @@ type NotifyParam struct {
 
 // NotifyParam define data to Notify template
 type NotifyParamV2 struct {
+	Uuid      string `json:"uuid"`
 	ID        int64  `json:"id"`
 	Person    string `json:"person"`
 	ComOn     string `json:"com_on"`
@@ -99,8 +99,6 @@ func SendToLineNotify(ps *NotifyParam) (*ResponseNotify, error) {
 }
 
 func SendToLineNotifyV2(ps *NotifyParamV2) error {
-	logrus.Print(ps)
-
 	accessToken := "Bearer " + os.Getenv("NOTIFY_TOKEN") //FIXME GET FROM SETTING
 	message := "Detection !" + "\n" +
 		"Person : " + ps.Person + "\n" +
@@ -109,8 +107,15 @@ func SendToLineNotifyV2(ps *NotifyParamV2) error {
 		"Time : " + ps.Time + "\n" +
 		"Accurency : " + ps.Accurency
 
-	convertBase64ToFile(ps.Image)
-	f, err := os.Open("./detected.jpeg")
+	path := filepath.Join("./storage", "/detected-"+ps.Uuid+".jpeg")
+	convertBase64ToFile(ps.Image, path)
+
+	// f, err := os.Create(path)
+	// if err == nil {
+	// 	return err
+	// }
+
+	f, err := os.Open("detected.jpeg")
 	if err != nil {
 		return err
 	}
@@ -150,56 +155,67 @@ func SendToLineNotifyV2(ps *NotifyParamV2) error {
 	return nil
 }
 
-func convertBase64ToFile(data string) {
+func convertBase64ToFile(data string, fileName string) {
 	idx := strings.Index(data, ";base64,")
 	if idx < 0 {
 		panic("InvalidImage")
 	}
-	ImageType := data[11:idx]
+	// ImageType := data[11:idx]
 
 	unbased, err := base64.StdEncoding.DecodeString(data[idx+8:])
 	if err != nil {
 		panic("Cannot decode b64")
 	}
 	r := bytes.NewReader(unbased)
-	switch ImageType {
-	case "png":
-		im, err := png.Decode(r)
-		if err != nil {
-			panic("Bad png")
-		}
 
-		f, err := os.OpenFile("detected.png", os.O_WRONLY|os.O_CREATE, 0777)
-		if err != nil {
-			panic("Cannot open file")
-		}
-
-		png.Encode(f, im)
-	case "jpeg":
+	if out, err := os.Create(fileName); err == nil {
 		im, err := jpeg.Decode(r)
 		if err != nil {
 			panic("Bad jpeg")
 		}
 
-		f, err := os.OpenFile("detected.jpeg", os.O_WRONLY|os.O_CREATE, 0777)
-		if err != nil {
-			panic("Cannot open file")
+		if err = jpeg.Encode(out, im, nil); err == nil {
+			spew.Dump("image save !" + out.Name())
 		}
-
-		jpeg.Encode(f, im, nil)
-	case "gif":
-		im, err := gif.Decode(r)
-		if err != nil {
-			panic("Bad gif")
-		}
-
-		f, err := os.OpenFile("detected.gif", os.O_WRONLY|os.O_CREATE, 0777)
-		if err != nil {
-			panic("Cannot open file")
-		}
-
-		gif.Encode(f, im, nil)
 	}
 
+	// switch ImageType {
+	// case "png":
+	// 	im, err := png.Decode(r)
+	// 	if err != nil {
+	// 		panic("Bad png")
+	// 	}
+
+	// 	f, err := os.OpenFile(fileName, os.O_WRONLY|os.O_CREATE, 0777)
+	// 	if err != nil {
+	// 		panic("Cannot open file")
+	// 	}
+
+	// 	png.Encode(f, im)
+	// case "jpeg":
+	// 	im, err := jpeg.Decode(r)
+	// 	if err != nil {
+	// 		panic("Bad jpeg")
+	// 	}
+
+	// 	f, err := os.OpenFile(fileName, os.O_WRONLY|os.O_CREATE, 0777)
+	// 	if err != nil {
+	// 		panic("Cannot open file")
+	// 	}
+
+	// 	jpeg.Encode(f, im, nil)
+	// case "gif":
+	// 	im, err := gif.Decode(r)
+	// 	if err != nil {
+	// 		panic("Bad gif")
+	// 	}
+
+	// 	f, err := os.OpenFile(fileName, os.O_WRONLY|os.O_CREATE, 0777)
+	// 	if err != nil {
+	// 		panic("Cannot open file")
+	// 	}
+
+	// 	gif.Encode(f, im, nil)
+	// }
 	return
 }
