@@ -51,7 +51,12 @@ func (h *AuthController) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	spew.Dump(ps.Password)
+	spew.Dump(user.Password)
+
 	if !h.auth.CheckPassword(user.Password, ps.Password) {
+spew.Dump("in if")
+
 		h.Error(w, errors.New("uauthorized"), "uauthorized", http.StatusUnauthorized)
 		return
 	}

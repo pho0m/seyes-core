@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"time"
+	"github.com/davecgh/go-spew/spew"
 
 	"github.com/golang-jwt/jwt"
 	"golang.org/x/crypto/bcrypt"
@@ -179,7 +180,18 @@ func (a *Authenticator) HashPassword(password string) (string, error) {
 
 // CheckPassword compare hashed and plain text password
 func (a *Authenticator) CheckPassword(hashed string, password string) bool {
-	return bcrypt.CompareHashAndPassword([]byte(hashed), []byte(password)) == nil
+
+
+spew.Dump(hashed)
+
+spew.Dump(password)
+
+res := bcrypt.CompareHashAndPassword([]byte(hashed), []byte(password)) == nil
+	
+spew.Dump(res)
+
+
+return res
 }
 
 

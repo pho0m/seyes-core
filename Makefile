@@ -1,14 +1,14 @@
 .PHONY:
 dev:
-	docker-compose up
+	sudo docker compose up
 
 .PHONY:
 down:
-	docker-compose down -v
+	sudo docker compose down -v
 
 .PHONY:
 psql:
-	docker-compose exec db psql -U seyes_core seyes_core_db
+	sudo docker compose exec db psql -U seyes_core seyes_core
 
 APP=RTSPtoWeb
 SERVER_FLAGS ?= -config config.json

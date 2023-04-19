@@ -4,7 +4,7 @@ import (
 	"seyes-core/internal/helper"
 
 	"gorm.io/gorm"
-
+	"golang.org/x/crypto/bcrypt"
 	mo "seyes-core/internal/model/user"
 )
 
@@ -89,12 +89,14 @@ func GetUser(db *gorm.DB, ps *helper.UrlParams) (map[string]interface{}, error) 
 
 // CreateUser create a user
 func CreateUser(db *gorm.DB, ps *UserParams) (map[string]interface{}, error) {
+	bcPass, _ := bcrypt.GenerateFromPassword([]byte(ps.Password), 14)
+	
 	user := &mo.User{
 		Active:    ps.Active,
 		FirstName: ps.FirstName,
 		LastName:  ps.LastName,
 		Tel:       ps.Tel,
-		Password:  ps.Password,
+		Password: string(bcPass),
 		Email:     ps.Email,
 	}
 
