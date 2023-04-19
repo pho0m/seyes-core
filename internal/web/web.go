@@ -28,11 +28,11 @@ func NewServer(sc *service.Container, port string) *Server {
 	r.Use(cors.Handler(cors.Options{
 		AllowedOrigins:   []string{"*"},
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token", "X-Token", "Liff-Id", "Line-Token"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type",  "X-Token"},
 		AllowCredentials: true,
 	}))
 
-	r.Route("/", func(r chi.Router) {
+	r.Route("/api", func(r chi.Router) {
 		dashboardAPI.SetupRoutes(sc, r)
 	})
 
@@ -41,18 +41,6 @@ func NewServer(sc *service.Container, port string) *Server {
 		Router: r,
 	}
 }
-
-// // NewApiMiddleware creates a new NewApiMiddleware
-// func NewApiMiddleware() map[string]string {
-// 	username := os.Getenv("BASIC_AUTH_USERNAME")
-// 	password := os.Getenv("BASIC_AUTH_PASSWORD")
-
-// 	cred := map[string]string{
-// 		username: password,
-// 	}
-
-// 	return cred
-// }
 
 // RegisterHandler add handler to router
 func (s *Server) RegisterHandler(h common.Handler) {

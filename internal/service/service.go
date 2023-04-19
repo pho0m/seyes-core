@@ -41,14 +41,9 @@ func NewContainer() (*Container, error) {
 func DoMigration(db *gorm.DB) error {
 	db.AutoMigrate(tableSets...)
 
-	// if err := CreateDefaultRole(db); err != nil {
-	// 	sentry.CaptureException(err)
-	// 	panic("cannot initialize Role: " + err.Error())
-	// }
+	if err := CreateDefaultSuperAdmin(db); err != nil {
+		panic("cannot initialize Super admin: " + err.Error())
+	}
 
-	// if err := CreateDefaultSuperAdmin(db); err != nil {
-	// 	sentry.CaptureException(err)
-	// 	panic("cannot initialize Super admin: " + err.Error())
-	// }
 	return nil
 }
