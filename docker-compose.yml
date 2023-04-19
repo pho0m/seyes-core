@@ -9,15 +9,29 @@ services:
     env_file:
       - .env
     ports:
-      - "3000:3000"
+      - "${APP_PORT}:${APP_PORT}"
     volumes:
       - .:/app
     depends_on:
       - db
 
   db:
+    container_name: seyes_postgres_db
     image: postgres:13.0-alpine
     environment:
-      POSTGRES_DB: seyes_core
-      POSTGRES_USER: seyes_core
-      POSTGRES_PASSWORD: localpass
+      POSTGRES_DB: ${PG_DB}
+      POSTGRES_USER: ${PG_USERNAME}
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+    ports:
+      - ${PG_PORT}:5432
+
+  # auth:
+  #   container_name: seyes_auth
+  #   image: fusionauth/fusionauth-app
+  #   ports:
+  #     - 9011:9011
+  #   restart: always
+  #   environment:
+  #     - DATABASE_URL=${AUTH_DATABASE_URL}
+  #     - DATABASE_USERNAME=${AUTH_DATABASE_USERNAME}
+  #     - DATABASE_PASSWORD=${AUTH_DATABASE_PASSWORD}

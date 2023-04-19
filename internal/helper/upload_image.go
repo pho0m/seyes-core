@@ -1,21 +1,25 @@
-package core
+package helper
 
 import (
 	"bytes"
 	"fmt"
+	"image"
+	"image/jpeg"
 	"io"
+	"log"
 	"mime/multipart"
 	"net/http"
 	"path"
-	"seyes-core/internal/helper"
+	"strconv"
 	"strings"
 
 	"github.com/gofrs/uuid"
 )
 
-//APIS UPLOAD PHOTO V2
-// PhotoFileParams defines File for Upload Photo
-type PhotoFileParams struct {
+//*FIXME please refactor comment function
+
+// ImageFileParams defines File for Upload image
+type ImageFileParams struct {
 	Bucket     string
 	PublicRead bool
 	MediaType  string
@@ -31,10 +35,10 @@ type Media struct {
 	Type     string `json:"type"`
 }
 
-// UploadPhoto uploads file to cloud storage // FIXME
-func UploadPhoto(ps *helper.UploadFileParams) (*Media, error) {
-	mediaName := "media_dev/temp" //os.Getenv("STORAGE_MEDIA_NAME")
-	padding, err := helper.GeneratePadding()
+// UploadImage uploads file to web server // FIXME
+func UploadImage(ps *UploadFileParams) (*Media, error) {
+	mediaName := "media/temp" //os.Getenv("STORAGE_MEDIA_NAME")
+	padding, err := GeneratePadding()
 
 	if err != nil {
 		return nil, err
@@ -58,13 +62,13 @@ func UploadPhoto(ps *helper.UploadFileParams) (*Media, error) {
 	return m, nil
 }
 
-func makeMultipartBody(message string, image multipart.File) (body bytes.Buffer, contentType string, err error) {
+func MakeMultipartBody(message string, image multipart.File) (body bytes.Buffer, contentType string, err error) {
 	writer := multipart.NewWriter(&body)
 
-	if err = writeBodyInMessage(writer, message); err != nil {
+	if err = WriteBodyInMessage(writer, message); err != nil {
 		return
 	}
-	if err = writeBodyInImageFile(writer, image); err != nil {
+	if err = WriteBodyInImageFile(writer, image); err != nil {
 		return
 	}
 	writer.Close()
@@ -73,7 +77,7 @@ func makeMultipartBody(message string, image multipart.File) (body bytes.Buffer,
 	return
 }
 
-func writeBodyInMessage(writer *multipart.Writer, message string) (err error) {
+func WriteBodyInMessage(writer *multipart.Writer, message string) (err error) {
 	var messageWriter io.Writer
 	messageWriter, err = writer.CreateFormField("message")
 	if err != nil {
@@ -85,10 +89,10 @@ func writeBodyInMessage(writer *multipart.Writer, message string) (err error) {
 	return
 }
 
-func writeBodyInImageFile(writer *multipart.Writer, image multipart.File) (err error) {
+func WriteBodyInImageFile(writer *multipart.Writer, image multipart.File) (err error) {
 
-	mediaName := "media_dev/" //os.Getenv("STORAGE_MEDIA_NAME")
-	padding, err := helper.GeneratePadding()
+	mediaName := "media/" //os.Getenv("STORAGE_MEDIA_NAME")
+	padding, err := GeneratePadding()
 
 	if err != nil {
 		return err
@@ -108,4 +112,18 @@ func writeBodyInImageFile(writer *multipart.Writer, image multipart.File) (err e
 	}
 	image.Close()
 	return
+}
+
+func WriteImageToRespone(w http.ResponseWriter, img *image.Image) {
+
+	buffer := new(bytes.Buffer)
+	if err := jpeg.Encode(buffer, *img, nil); err != nil {
+		log.Println("unable to encode image.")
+	}
+
+	w.Header().Set("Content-Type", "image/jpeg")
+	w.Header().Set("Content-Length", strconv.Itoa(len(buffer.Bytes())))
+	if _, err := w.Write(buffer.Bytes()); err != nil {
+		log.Println("unable to write image.")
+	}
 }

@@ -1,10 +1,7 @@
 package dashboardAPI
 
 import (
-	"encoding/json"
-	"log"
 	"net/http"
-	dt "seyes-core/internal/core/detections"
 	noti "seyes-core/internal/core/notifications"
 
 	"seyes-core/internal/helper"
@@ -40,10 +37,10 @@ func (c *DashboardController) HealthCheck(w http.ResponseWriter, r *http.Request
 func (c *DashboardController) Notify(w http.ResponseWriter, r *http.Request) {
 
 	r.Body = http.MaxBytesReader(w, r.Body, 4*1024*1024) // 4 Mb
-	file, handler, err := r.FormFile("photo")
+	file, handler, err := r.FormFile("image")
 
 	if err != nil {
-		c.Error(w, err, "error upload photo", http.StatusBadRequest)
+		c.Error(w, err, "error upload image", http.StatusBadRequest)
 		return
 	}
 
@@ -53,7 +50,7 @@ func (c *DashboardController) Notify(w http.ResponseWriter, r *http.Request) {
 	u := helper.ParsingUploadFileParams(file, handler)
 
 	data := noti.NotifyParam{
-		Photo:     u.File,
+		Image:     u.File,
 		ID:        ps.ID,
 		Person:    ps.Person,
 		ComOn:     ps.ComOn,
@@ -72,27 +69,37 @@ func (c *DashboardController) Notify(w http.ResponseWriter, r *http.Request) {
 	c.JSON(w, res)
 }
 
-// ReadModelFile endpoint read tensorflow model for object detection
-func (c *DashboardController) ReadModelFile(w http.ResponseWriter, r *http.Request) {
+// NotifyFromSeyesApp endpoint for notify in line FIXME
+func (c *DashboardController) NotifyFromSeyesApp(w http.ResponseWriter, r *http.Request) {
 
-	res, err := dt.ReadTensorflowModel()
+	r.Body = http.MaxBytesReader(w, r.Body, 4*1024*1024) // 4 Mb
+	file, handler, err := r.FormFile("image")
 
 	if err != nil {
-		c.Error(w, err, "cannot read file", http.StatusInternalServerError)
-		return
-	}
-	var m interface{}
-
-	err = json.Unmarshal([]byte(res), &m)
-	if err != nil {
-		c.Error(w, err, "cannot Unmarshal JSON", http.StatusInternalServerError)
+		c.Error(w, err, "error upload image", http.StatusBadRequest)
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
+	ps := helper.ParsingQueryUpload(r.Form)
 
-	if _, err := w.Write([]byte(res)); err != nil {
-		log.Println("Cannot write a response:", err.Error())
+	defer file.Close()
+	u := helper.ParsingUploadFileParams(file, handler)
+
+	data := noti.NotifyParam{
+		Image:     u.File,
+		ID:        ps.ID,
+		Person:    ps.Person,
+		ComOn:     ps.ComOn,
+		UploadAt:  ps.UploadAt,
+		Time:      ps.Time,
+		Accurency: ps.Accurency,
+	}
+
+	res, err := noti.SendToLineNotify(&data)
+
+	if err != nil {
+		c.Error(w, err, "send to error", http.StatusInternalServerError)
+		return
 	}
 
 	c.JSON(w, res)

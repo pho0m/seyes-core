@@ -7,6 +7,7 @@ import (
 // User defines the user model details
 type User struct {
 	m.Model
+	Active    bool   `json:"active"`
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
 	Tel       string `json:"tel"`

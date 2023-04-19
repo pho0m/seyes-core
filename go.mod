@@ -11,9 +11,15 @@ require (
 	gorm.io/gorm v1.20.8
 )
 
-require github.com/davecgh/go-spew v1.1.1
+require (
+	github.com/jasonlvhit/gocron v0.0.1 // indirect
+	github.com/robfig/cron/v3 v3.0.0 // indirect
+	github.com/sirupsen/logrus v1.9.0 // indirect
+	golang.org/x/sys v0.4.0 // indirect
+)
 
 require (
+	github.com/davecgh/go-spew v1.1.1
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
 	github.com/jackc/pgconn v1.8.0 // indirect
 	github.com/jackc/pgio v1.0.0 // indirect
@@ -24,6 +30,7 @@ require (
 	github.com/jackc/pgx/v4 v4.10.1 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.1 // indirect
+	github.com/mitchellh/mapstructure v1.5.0
 	github.com/stretchr/testify v1.8.1 // indirect
 	golang.org/x/text v0.6.0 // indirect
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect

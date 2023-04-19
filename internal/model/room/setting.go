@@ -8,6 +8,14 @@ import (
 type Setting struct {
 	m.Model
 
-	ModelData   string `json:"model_data"`
-	CronjobTime string `json:"cronjob_time"`
+	Active                bool   `json:"active"`
+	AiModelData           string `json:"model_data"`
+	CronjobTime           string `json:"cronjob_time"`
+	LineNotifyAccessToken string `json:"notify_access_token"`
+
+	MqttIp         string `json:"mqtt_ip"`
+	MqttUserName   string `json:"mqtt_username"`
+	MqttPassword   string `json:"mqtt_password"`
+	MqttPort       string `json:"mqtt_port"`
+	MqttClientName string `json:"mqtt_client_name"`
 }
