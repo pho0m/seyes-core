@@ -10,7 +10,6 @@ import (
 	"seyes-core/internal/helper"
 	"strconv"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/robfig/cron/v3"
 	"gorm.io/gorm"
 
@@ -103,9 +102,6 @@ func UpdatedSettings(db *gorm.DB, ps *SettingsParams) (map[string]interface{}, e
 	cr := cron.New()
 	cr.Start()
 
-	spew.Dump(cr)
-	spew.Dump("test update setting")
-
 	setting.Active = ps.Active
 	setting.AiModelData = ps.AiModelData
 	setting.CronjobTime = ps.CronjobTime
@@ -143,8 +139,7 @@ func UpdatedSettings(db *gorm.DB, ps *SettingsParams) (map[string]interface{}, e
 func cronAutomateDetection(db *gorm.DB, cronTime string, cr *cron.Cron) {
 
 	cr.AddFunc("@every "+cronTime+"m", func() {
-		spew.Dump(cronTime)
-		spew.Dump("Start cron !")
+
 		// ctx := r.Context().Value("user_info").(*auth.UserInfo)
 		var urlSeyesCam = os.Getenv("SEYES_CAM_URL") + "/image"
 

@@ -49,7 +49,6 @@ func GetAllUser(db *gorm.DB, filter *UserFilter) (map[string]interface{}, error)
 			FirstName: u.FirstName,
 			LastName:  u.LastName,
 			Tel:       u.Tel,
-			Password:  u.Password,
 			Email:     u.Email,
 		})
 	}

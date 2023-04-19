@@ -2,6 +2,7 @@ package dashboardAPI
 
 import (
 	"seyes-core/internal/service"
+	auth "seyes-core/internal/web/common/auth"
 
 	"github.com/go-chi/chi"
 )
@@ -9,26 +10,24 @@ import (
 // SetupRoutes setup route for dashboard-api
 func SetupRoutes(sc *service.Container, r chi.Router) {
 
-	// a := auth.NewApiMiddleware(sc)
-	// // Auth Sections
-	// r.Route("/login", func(r chi.Router) {
-	// 	c := NewAuthController(sc)
-
-	// 	r.Post("/", c.Login)
-	// })
-
-	// r.Route("/me", func(r chi.Router) {
-	// 	c := NewAuthController(sc)
-
-	// 	r.Get("/", c.Me)
-	// 	r.Get("/session", c.GetSession)
-	// 	r.Post("/session", c.CreateSession)
-	// })
-
+	a := auth.NewApiMiddleware(sc)
+			// Auth Sections
+			r.Route("/login", func(r chi.Router) {
+				c := NewAuthController(sc)
+	
+				r.Post("/", c.Login)
+			})
+	
+			r.Route("/me", func(r chi.Router) {
+				c := NewAuthController(sc)
+	
+				r.Get("/", c.Me)
+			})
+	
 	// dashboard controller Sections
-	r.Route("/api", func(r chi.Router) {
+	r.Route("/dashboard", func(r chi.Router) {
 		c := NewDashboardController(sc)
-		// r.Use(a.MiddlewareAnalytic)
+		r.Use(a.MiddlewareCore)
 
 		r.Get("/", c.HealthCheck)
 		r.Post("/notify", c.NotifyFromSeyesApp)

@@ -5,6 +5,7 @@ import (
 	"os"
 	core "seyes-core/internal/core/dashboard"
 	model "seyes-core/internal/model/room"
+	common "seyes-core/internal/web/common/auth"
 
 	"seyes-core/internal/service"
 	"seyes-core/internal/web"
@@ -23,10 +24,16 @@ func main() {
 	appPort := os.Getenv("APP_PORT")
 
 	sc, err := service.NewContainer()
-
 	if err != nil {
-		panic(err)
+		panic("cannot initialize contianer: " + err.Error())
 	}
+
+	a, err := common.NewAuthenticator()
+	if err != nil {
+		panic("cannot initialize Authenticator: " + err.Error())
+	}
+	sc.Auth = a
+	
 
 	if err := sanityChecks(); err != nil {
 		panic(err)

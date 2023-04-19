@@ -7,6 +7,7 @@ import (
 	"seyes-core/internal/helper"
 	"seyes-core/internal/service"
 	"seyes-core/internal/web/common"
+	auth "seyes-core/internal/web/common/auth"
 
 	"github.com/go-chi/chi"
 	"gorm.io/gorm"
@@ -17,7 +18,7 @@ type UserController struct {
 	db *gorm.DB
 	common.BaseRender
 	sc *service.Container
-	// auth *auth.Authenticator
+	auth *auth.Authenticator
 }
 
 // NewUserController creates a new WebHandler
@@ -25,13 +26,19 @@ func NewUserController(sc *service.Container) *UserController {
 	return &UserController{
 		db: sc.DB,
 		sc: sc,
-		// auth: sc.Auth.(*auth.Authenticator),
+		auth: sc.Auth.(*auth.Authenticator),
 	}
 }
 
 // IndexUserHandler endpoint for get all User
 func (h *UserController) IndexUserHandler(w http.ResponseWriter, r *http.Request) {
 	// ctx := r.Context().Value("user_info").(*auth.UserInfo)
+
+	// if ctx == nil {
+	// 	helper.ReturnError(w, "err", "error get all User", http.StatusBadRequest)
+	// 	return
+	// }
+
 
 	ps := helper.ParsingQueryString(r.URL.Query())
 
